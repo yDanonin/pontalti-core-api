@@ -1,6 +1,6 @@
-import { Vendor } from "@/types/vendor.types";
-import { CommonRequest } from "@/types/common.types";
-import prisma from "@/lib/prisma";
+import { Vendor } from "@pontalti/types/vendor.types";
+import { CommonRequest } from "@pontalti/types/common.types";
+import prisma from "@pontalti/lib/prisma";
 
 const createVendor = async (data: Vendor) => {
   return await prisma.vendors.create({ data });

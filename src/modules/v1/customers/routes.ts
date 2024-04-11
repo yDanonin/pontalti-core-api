@@ -5,14 +5,15 @@ import { createCustomerSchema } from "@pontalti/modules/v1/customers/customer-sc
 import { validate } from "@pontalti/utils/validator";
 const routes = Router();
 
-routes.post('/', validate(createCustomerSchema), (req: Request, res: Response, next: NextFunction) => {
+routes.post('/', validate(createCustomerSchema), (req: Request, res: Response, next) => {
   customerService.createCustomer(req.body)
     .then(result => {
       res.json(result)
     })
     .catch(e => {
-      const httpError = createHttpError(e)
-      next(httpError)
+      next(e)
+      // const httpError = createHttpError(e)
+      // next(httpError)
     })
 })
 

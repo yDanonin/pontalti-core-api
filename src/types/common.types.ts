@@ -15,7 +15,7 @@ export type DefaultResponse<T = object> = {
   data: T | T[];
 };
 
-export type CommonRequest<T = unknown> = Partial<T> & {
+export type CommonRequest<T = unknown> = Partial<T> & Partial<{
   page: number;
-  perpage: number;
-}
+  perPage: number;
+}>

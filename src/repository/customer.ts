@@ -1,5 +1,5 @@
 import { Customer, CustomerRegister, CustomerRequest } from "@pontalti/types/customer.types";
-import prisma from "@pontalti/lib/prisma";
+import prisma, { dbErrorHandle } from "@pontalti/lib/prisma";
 import { PaginationResponse } from "@pontalti/types/common.types";
 
 const defaultSelectedFieldForCustomers = {
@@ -32,116 +32,137 @@ const defaultSelectedFieldForCustomers = {
 };
 
 const createCustomer = async (data: CustomerRegister) => {
-  const { address, ...customerData } = data;
-  return await prisma.customers.create({
-    data: {
-      ...customerData,
-      address: {
-        create: address
+  try{
+    const { address, ...customerData } = data;
+    return await prisma.customers.create({
+      data: {
+        ...customerData,
+        address: {
+          create: address
+        }
+      },
+      include: {
+        address: true
       }
-    },
-    include: {
-      address: true
-    }
-  });
+    });
+  } catch(e) {
+    dbErrorHandle(e)
+  }
+
 };
 
 const getCustomer = async (id: number) => {
-  return await prisma.customers.findUnique({ where: { id }, select: defaultSelectedFieldForCustomers });
+  try{
+    return await prisma.customers.findUnique({ where: { id }, select: defaultSelectedFieldForCustomers });
+  } catch(e) {
+    dbErrorHandle(e)
+  }
 };
 
 const getCustomers = async (filters: CustomerRequest) => {
-  const {
-    page,
-    perPage,
-    id,
-    name,
-    cpf,
-    cnpj,
-    store_name,
-    cel_number,
-    phone,
-    pontalti,
-    status,
-    deliver,
-    secondary_line
-  } = filters;
+  try{
+    const {
+      page,
+      perPage,
+      id,
+      name,
+      cpf,
+      cnpj,
+      store_name,
+      cel_number,
+      phone,
+      pontalti,
+      status,
+      deliver,
+      secondary_line
+    } = filters;
 
-  const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
+    const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
 
-  // prettier-ignore
-  const whereClause = id ? { id } : {
-    name: { contains: name },
-    cpf: { contains: cpf },
-    cnpj: { contains: cnpj },
-    store_name: { contains: store_name },
-    cel_number: { contains: cel_number },
-    phone: { contains: phone },
-    pontalti: pontalti,
-    status: status,
-    deliver: deliver,
-    secondary_line: secondary_line
-  };
+    // prettier-ignore
+    const whereClause = id ? { id } : {
+      name: { contains: name },
+      cpf: { contains: cpf },
+      cnpj: { contains: cnpj },
+      store_name: { contains: store_name },
+      cel_number: { contains: cel_number },
+      phone: { contains: phone },
+      pontalti: pontalti,
+      status: status,
+      deliver: deliver,
+      secondary_line: secondary_line
+    };
 
-  const result = await prisma.customers.findMany({
-    where: whereClause,
-    select: defaultSelectedFieldForCustomers,
-    take: perPage,
-    skip: skip
-  });
+    const result = await prisma.customers.findMany({
+      where: whereClause,
+      select: defaultSelectedFieldForCustomers,
+      take: perPage,
+      skip: skip
+    });
 
-  const totalRecords = await prisma.customers.count({
-    where: whereClause
-  });
+    const totalRecords = await prisma.customers.count({
+      where: whereClause
+    });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const customers = result.map((item: any) => {
-    return { ...item } as Customer;
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const customers = result.map((item: any) => {
+      return { ...item } as Customer;
+    });
 
-  const hasMoreItems = await prisma.customers.count({
-    where: {
-      id: {
-        gt: customers[customers.length - 1]?.id || 0
+    const hasMoreItems = await prisma.customers.count({
+      where: {
+        id: {
+          gt: customers[customers.length - 1]?.id || 0
+        }
       }
-    }
-  });
+    });
 
-  const nextPage = hasMoreItems ? page! + 1 : undefined;
+    const nextPage = hasMoreItems ? page! + 1 : undefined;
 
-  return {
-    data: customers,
-    totalRecord: totalRecords,
-    page: page ?? 1,
-    perPage: perPage,
-    nextPage: nextPage ? `/api/customers?page=${nextPage}` : undefined
-  } as PaginationResponse<Customer>;
+    return {
+      data: customers,
+      totalRecord: totalRecords,
+      page: page ?? 1,
+      perPage: perPage,
+      nextPage: nextPage ? `/api/customers?page=${nextPage}` : undefined
+    } as PaginationResponse<Customer>;
+  } catch(e) {
+    dbErrorHandle(e)
+  }
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updatePartialCustomer = async (id: number, data: any) => {
-  const existingCustomer = await prisma.customers.findUnique({
-    where: { id }
-  });
+  try{
+    const existingCustomer = await prisma.customers.findUnique({
+      where: { id }
+    });
 
-  if (!existingCustomer) {
-    throw new Error("Customer not found");
+    if (!existingCustomer) {
+      throw new Error("Customer not found");
+    }
+
+    const updatedCustomer = await prisma.customers.update({
+      where: { id },
+      data: {
+        ...existingCustomer,
+        ...data
+      },
+      select: defaultSelectedFieldForCustomers
+    });
+
+    return updatedCustomer;
+  } catch(e) {
+    dbErrorHandle(e)
   }
-
-  const updatedCustomer = await prisma.customers.update({
-    where: { id },
-    data: {
-      ...existingCustomer,
-      ...data
-    },
-    select: defaultSelectedFieldForCustomers
-  });
-
-  return updatedCustomer;
 };
 
 const deleteCustomer = async (id: number) => {
-  return await prisma.customers.delete({ where: { id }, select: defaultSelectedFieldForCustomers });
+  try{
+    return await prisma.customers.delete({ where: { id }, select: defaultSelectedFieldForCustomers });
+  } catch(e) {
+    dbErrorHandle(e)
+  }
 };
 
 export default {

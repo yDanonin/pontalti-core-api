@@ -1,6 +1,6 @@
-import { Product } from "@/types/product.types";
-import { CommonRequest } from "@/types/common.types";
-import prisma from "@/lib/prisma";
+import { Product } from "@pontalti/types/product.types";
+import { CommonRequest } from "@pontalti/types/common.types";
+import prisma from "@pontalti/lib/prisma";
 
 const createProduct = async (data: Product) => {
   return await prisma.products.create({ data });

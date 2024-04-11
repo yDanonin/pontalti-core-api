@@ -1,4 +1,4 @@
-import { Status } from "./common.types";
+import { CommonRequest, Status } from "./common.types";
 import { Address } from "./address.types";
 
 export type Customer = {
@@ -20,9 +20,8 @@ export type Customer = {
 
 export type CustomerRegister = Omit<Customer, "id">;
 
-export type CustomerRequest = Partial<Omit<Customer, "credit_limit">> & Partial<{
-  page: number;
-  perPage: number;
-}>;
+export type CustomerRequest = CommonRequest<Omit<Customer, "credit_limit">>
+
+export type test = CommonRequest<Omit<Customer, "credit_limit">>
 
 export type CustomerStatusString = Omit<Customer, "status"> & { status: string };

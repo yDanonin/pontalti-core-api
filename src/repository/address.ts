@@ -1,6 +1,6 @@
-import { Address } from "@/types/address.types";
-import { CommonAddressRequest } from "@/types/address.types";
-import prisma from "@/lib/prisma";
+import { Address } from "@pontalti/types/address.types";
+import { CommonAddressRequest } from "@pontalti/types/address.types";
+import prisma from "@pontalti/lib/prisma";
 
 const createAddress = async (data: Address) => {
   return await prisma.adresses.create({ data });

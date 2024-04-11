@@ -1,6 +1,6 @@
-import { Employee } from "@/types/employee.types";
-import { CommonRequest } from "@/types/common.types";
-import prisma from "@/lib/prisma";
+import { Employee } from "@pontalti/types/employee.types";
+import { CommonRequest } from "@pontalti/types/common.types";
+import prisma from "@pontalti/lib/prisma";
 
 const createEmployee = async (data: Employee) => {
   return await prisma.employees.create({ data });

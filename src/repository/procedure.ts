@@ -1,6 +1,6 @@
-import { Procedure } from "@/types/procedure.types";
-import { CommonRequest } from "@/types/common.types";
-import prisma from "@/lib/prisma";
+import { Procedure } from "@pontalti/types/procedure.types";
+import { CommonRequest } from "@pontalti/types/common.types";
+import prisma from "@pontalti/lib/prisma";
 
 const createProcedure = async (data: Procedure) => {
   return await prisma.procedures.create({ data });
