@@ -48,6 +48,7 @@ async function main() {
     pontalti: false,
     secondary_line: true,
     credit_limit: 1000,
+    debts: 0,
     addressId: 1
   };
 
