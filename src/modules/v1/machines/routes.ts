@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import customerService from "./customer-service";
+import machineService from "@pontalti/modules/v1/machines/machine-service";
 const routes = Router();
 
 routes.post('/', (req: Request, res: Response, next: NextFunction) => {
-  customerService.createCustomer(req.body)
+  machineService.createMachine(req.body)
     .then(result => {
       res.json(result)
     })
@@ -15,12 +15,12 @@ routes.post('/', (req: Request, res: Response, next: NextFunction) => {
 })
 
 routes.get('/', (req: Request, res: Response, next: NextFunction) => {
-  customerService.getAllCustomers(req.params)
+  machineService.getAllMachines(req.params)
 })
 
 routes.get('/:id', (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id;
-  customerService.getCustomerById(Number(id))
+  machineService.getMachineById(Number(id))
     .then(result => {
       res.json(result)
     })
@@ -31,7 +31,7 @@ routes.get('/:id', (req: Request, res: Response, next: NextFunction) => {
 })
 
 routes.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
-  customerService.updatePartialCustomer(Number(req.params.id), req.body)
+  machineService.updatePartialMachine(Number(req.params.id), req.body)
     .then(result => {
       res.json(result)
     })
@@ -42,7 +42,7 @@ routes.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
 })
 
 routes.delete('/:id', (req: Request, res: Response, next: NextFunction) => {
-  customerService.deleteCustomer(Number(req.params.id))
+  machineService.deleteMachine(Number(req.params.id))
     .then(result => {
       res.json(result)
     })

@@ -7,6 +7,7 @@ const defaultSelectedFieldForCustomers = {
   status: true,
   addressId: true,
   credit_limit: true,
+  debts: true,
   name: true,
   phone: true,
   cel_number: true,

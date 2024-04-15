@@ -4,7 +4,7 @@ import productService from "@pontalti/modules/v1/products/product-service";
 const routes = Router();
 
 routes.post('/', (req: Request, res: Response, next: NextFunction) => {
-  productService.createCustomer(req.body)
+  productService.createProduct(req.body)
     .then(result => {
       res.json(result)
     })
@@ -15,12 +15,12 @@ routes.post('/', (req: Request, res: Response, next: NextFunction) => {
 })
 
 routes.get('/', (req: Request, res: Response, next: NextFunction) => {
-  productService.getAllCustomers(req.params)
+  productService.getAllProducts(req.params)
 })
 
 routes.get('/:id', (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id;
-  productService.getCustomerById(Number(id))
+  productService.getProductById(Number(id))
     .then(result => {
       res.json(result)
     })
@@ -31,7 +31,7 @@ routes.get('/:id', (req: Request, res: Response, next: NextFunction) => {
 })
 
 routes.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
-  productService.updatePartialCustomer(Number(req.params.id), req.body)
+  productService.updatePartialProduct(Number(req.params.id), req.body)
     .then(result => {
       res.json(result)
     })
@@ -42,7 +42,7 @@ routes.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
 })
 
 routes.delete('/:id', (req: Request, res: Response, next: NextFunction) => {
-  productService.deleteCustomer(Number(req.params.id))
+  productService.deleteProduct(Number(req.params.id))
     .then(result => {
       res.json(result)
     })

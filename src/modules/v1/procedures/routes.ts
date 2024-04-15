@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import customerService from "./customer-service";
+import procedureService from "@pontalti/modules/v1/procedures/procedure-service";
 const routes = Router();
 
 routes.post('/', (req: Request, res: Response, next: NextFunction) => {
-  customerService.createCustomer(req.body)
+  procedureService.createProcedure(req.body)
     .then(result => {
       res.json(result)
     })
@@ -15,12 +15,12 @@ routes.post('/', (req: Request, res: Response, next: NextFunction) => {
 })
 
 routes.get('/', (req: Request, res: Response, next: NextFunction) => {
-  customerService.getAllCustomers(req.params)
+  procedureService.getAllProcedures(req.params)
 })
 
 routes.get('/:id', (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id;
-  customerService.getCustomerById(Number(id))
+  procedureService.getProcedureById(Number(id))
     .then(result => {
       res.json(result)
     })
@@ -31,7 +31,7 @@ routes.get('/:id', (req: Request, res: Response, next: NextFunction) => {
 })
 
 routes.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
-  customerService.updatePartialCustomer(Number(req.params.id), req.body)
+  procedureService.updatePartialProcedure(Number(req.params.id), req.body)
     .then(result => {
       res.json(result)
     })
@@ -42,7 +42,7 @@ routes.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
 })
 
 routes.delete('/:id', (req: Request, res: Response, next: NextFunction) => {
-  customerService.deleteCustomer(Number(req.params.id))
+  procedureService.deleteProcedure(Number(req.params.id))
     .then(result => {
       res.json(result)
     })
