@@ -16,6 +16,7 @@ model users {
   email    String @unique
   password String
   name     String
+  isAdmin  Boolean? @default(false)
 }
 
 //TODO: to use "viacep" api to search for a new address if we haven't it in our db

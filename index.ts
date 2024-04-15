@@ -2,16 +2,16 @@ import express, { NextFunction, Request, Response, request, response } from 'exp
 import ErrorHandler from './src/middlewares/error-handler';
 import { HttpError } from 'http-errors';
 import versionRoutes from "@pontalti/modules/v1/routes"
-// import AuthenticationHandler from './src/middlewares/authentication-handler';
+import AuthenticationHandler from './src/middlewares/authentication-handler';
 
 const app = express();
 app.use(express.json())
 
-// app.use(AuthenticationHandler)
+app.use(AuthenticationHandler)
 
-// app.get('/', (req: Request, res: Response) => {
-//   return res.status(401);
-// });
+app.get('/', (req: Request, res: Response) => {
+  return res.status(401);
+});
 
 app.get('/test', (req, res) => {
   res.status(200).json(req.headers);
@@ -23,7 +23,6 @@ app.get('/test', (req, res) => {
 //   const { default: versionRoutes } = await import('./src/modules/' + version + '/routes')
 //   app.use('/api/' + version, versionRoutes)
 // })
-
 
 app.use('/api/v1', versionRoutes)
 

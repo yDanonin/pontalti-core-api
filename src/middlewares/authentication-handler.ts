@@ -9,9 +9,7 @@ const AuthenticationHandler = (req: Request, res: Response, next: NextFunction) 
       return res.status(401).json({ message: 'Unauthorized: Authentication token not provided. Please include a valid JWT token in the Authorization header.' });
     }
 
-
     const [_, token] = authorization.split(' ');
-
 
     jwt.verify(token, process.env.PRIVATE_KEY, (err: any, decoded: any) => {
       if (err) {

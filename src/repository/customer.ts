@@ -31,8 +31,8 @@ const defaultSelectedFieldForCustomers = {
   }
 };
 
-const createCustomer = async (data: CustomerRegister) => {
-  try{
+const createCustomer = async (data: CustomerRegister): Promise<Customer> => {
+  try {
     const { address, ...customerData } = data;
     return await prisma.customers.create({
       data: {
@@ -51,16 +51,16 @@ const createCustomer = async (data: CustomerRegister) => {
 
 };
 
-const getCustomer = async (id: number) => {
-  try{
+const getCustomer = async (id: number): Promise<Customer> => {
+  try {
     return await prisma.customers.findUnique({ where: { id }, select: defaultSelectedFieldForCustomers });
   } catch(e) {
     dbErrorHandle(e)
   }
 };
 
-const getCustomers = async (filters: CustomerRequest) => {
-  try{
+const getCustomers = async (filters: CustomerRequest): Promise<PaginationResponse<Customer>> => {
+  try {
     const {
       page,
       perPage,
@@ -132,7 +132,7 @@ const getCustomers = async (filters: CustomerRequest) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const updatePartialCustomer = async (id: number, data: any) => {
+const updatePartialCustomer = async (id: number, data: any): Promise<Customer> => {
   try{
     const existingCustomer = await prisma.customers.findUnique({
       where: { id }
@@ -157,7 +157,7 @@ const updatePartialCustomer = async (id: number, data: any) => {
   }
 };
 
-const deleteCustomer = async (id: number) => {
+const deleteCustomer = async (id: number): Promise<Customer> => {
   try{
     return await prisma.customers.delete({ where: { id }, select: defaultSelectedFieldForCustomers });
   } catch(e) {
