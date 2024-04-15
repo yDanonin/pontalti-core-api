@@ -9,7 +9,7 @@
     "start-dev": "ts-node-dev --ignore-watch node_modules --require tsconfig-paths/register index.ts",
     "prisma": "npx prisma migrate reset --force && npx prisma db push",
     "prisma-format": "npx prisma format",
-    "load-prisma": "ts-node ./src/tasks/LoadPrisma.ts"
+    "load-prisma": "ts-node ./src/tasks/load-prisma.ts"
   },
   "keywords": [],
   "author": "",

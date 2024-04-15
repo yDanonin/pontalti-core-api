@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import customers from './customers/routes'
-import ErrorHandler from "@pontalti/middlewares/error-handler";
+import customers from '@pontalti/modules/v1/customers/routes'
+import auth from "@pontalti/modules/v1/auth/routes";
 
 const routes = Router();
 
@@ -10,6 +10,6 @@ routes.get('/test', (req, res) => {
 });
 
 routes.use('/customers', customers);
-// routes.use(ErrorHandler);
+routes.use('/auth', auth);
 
 export default routes;
