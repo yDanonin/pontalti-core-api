@@ -39,6 +39,7 @@ model customers {
   status         Int
   addressId      Int
   credit_limit   Float
+  debts          Float
   name           String
   phone          String
   cel_number     String

@@ -40,7 +40,7 @@ routes.get('/:id', (req: Request, res: Response, next: NextFunction) => {
     })
 })
 
-routes.put('/:id', (req: Request, res: Response, next: NextFunction) => {
+routes.patch('/:id', (req: Request, res: Response, next: NextFunction) => {
   customerService.updatePartialCustomer(Number(req.params.id), req.body)
     .then(result => {
       res.json(result)

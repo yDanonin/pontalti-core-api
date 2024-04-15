@@ -13,6 +13,7 @@ export type Customer = {
   pontalti: boolean;
   secondary_line: boolean;
   credit_limit: number;
+  debts: number;
   address: Address;
   cpf: string;
   cnpj: string;
@@ -25,3 +26,5 @@ export type CustomerRequest = CommonRequest<Omit<Customer, "credit_limit">>
 export type test = CommonRequest<Omit<Customer, "credit_limit">>
 
 export type CustomerStatusString = Omit<Customer, "status"> & { status: string };
+
+export type UpdatePartialCustomer = Partial<Customer>;

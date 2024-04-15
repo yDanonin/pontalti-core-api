@@ -1,4 +1,4 @@
-import { Customer, CustomerRequest, CustomerStatusString } from "@pontalti/types/customer.types";
+import { Customer, CustomerRequest, CustomerStatusString, UpdatePartialCustomer } from "@pontalti/types/customer.types";
 import { PaginationResponse, Status } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/customer";
 
@@ -41,8 +41,12 @@ const getCustomerById = async (id: number) => {
   }
 };
 
-const updatePartialCustomer = async (id: number, data: unknown) => {
+const updatePartialCustomer = async (id: number, data: UpdatePartialCustomer) => {
   try {
+    if(data.debts){
+    }
+
+
     return handleStatusInCustomer((await repository.updatePartialCustomer(id, data)) as Customer);
   } catch (e: any) {
     throw e;
