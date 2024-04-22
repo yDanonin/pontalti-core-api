@@ -1,6 +1,6 @@
 import { Employee } from "@pontalti/types/employee.types";
 import { CommonRequest } from "@pontalti/types/common.types";
-import prisma from "@pontalti/lib/prisma";
+import prisma, { dbErrorHandle } from "@pontalti/lib/prisma";
 
 const createEmployee = async (data: Employee) => {
   return await prisma.employees.create({ data });
@@ -11,12 +11,16 @@ const getEmployee = async (id: number) => {
 };
 
 const getEmployees = async (filters: CommonRequest) => {
-  const { page, perPage } = filters;
-  const skip = page !== 1 ? (page - 1) * perPage : undefined;
-  return await prisma.employees.findMany({
-    take: perPage,
-    skip: skip
-  });
+  try{
+    const { page, perPage } = filters;
+    const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
+    return await prisma.employees.findMany({
+      take: perPage,
+      skip: skip
+    });
+  } catch(e) {
+    dbErrorHandle(e)
+  }
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

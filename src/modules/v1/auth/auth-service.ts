@@ -1,4 +1,4 @@
-import { RegisterUser } from "@pontalti/types/user.types";
+import { RegisterUser, User } from "@pontalti/types/user.types";
 import { DefaultResponse } from "@pontalti/types/common.types";
 import jwt from 'jsonwebtoken'
 import repository from "@pontalti/repository/auth";
@@ -12,7 +12,8 @@ const register = async (data: RegisterUser) => {
     data.password = passwordHash;
 
     const response = await repository.registerUser(data);
-    return { data: response } as DefaultResponse;
+    const { password, ...userWithoutPassword } = response;
+    return { data: userWithoutPassword } as DefaultResponse;
   } catch (e) {
     throw e;
   }

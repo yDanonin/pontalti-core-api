@@ -3,51 +3,51 @@ import createHttpError from "http-errors";
 import venrdorService from "@pontalti/modules/v1/vendors/vendor-service";
 const routes = Router();
 
-routes.post('/', (req: Request, res: Response, next: NextFunction) => {
+routes.post('/', (req, res, next) => {
   venrdorService.createVendor(req.body)
     .then(result => {
       res.json(result)
     })
     .catch(e => {
-      const httpError = createHttpError
+      const httpError = createHttpError(e)
       next(httpError)
     })
 })
 
-routes.get('/', (req: Request, res: Response, next: NextFunction) => {
+routes.get('/', (req, res, next) => {
   venrdorService.getAllVendors(req.params)
 })
 
-routes.get('/:id', (req: Request, res: Response, next: NextFunction) => {
+routes.get('/:id', (req, res, next) => {
   const id = req.params.id;
   venrdorService.getVendorById(Number(id))
     .then(result => {
       res.json(result)
     })
     .catch(e => {
-      const httpError = createHttpError
+      const httpError = createHttpError(e)
       next(httpError)
     })
 })
 
-routes.put('/:id', (req: Request, res: Response, next: NextFunction) => {
+routes.put('/:id', (req, res, next) => {
   venrdorService.updatePartialVendor(Number(req.params.id), req.body)
     .then(result => {
       res.json(result)
     })
     .catch(e => {
-      const httpError = createHttpError
+      const httpError = createHttpError(e)
       next(httpError)
     })
 })
 
-routes.delete('/:id', (req: Request, res: Response, next: NextFunction) => {
+routes.delete('/:id', (req, res, next) => {
   venrdorService.deleteVendor(Number(req.params.id))
     .then(result => {
       res.json(result)
     })
     .catch(e => {
-      const httpError = createHttpError
+      const httpError = createHttpError(e)
       next(httpError)
     })
 })

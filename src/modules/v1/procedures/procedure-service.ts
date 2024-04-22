@@ -1,18 +1,18 @@
 import { Procedure } from "@pontalti/types/procedure.types";
-import { Status, CommonRequest } from "@pontalti/types/common.types";
+import { Status, CommonRequest, DefaultResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/procedure";
 
-const handleProcedure = (e: Procedure | Procedure[]) => {
+const handleProcedure = (e: Procedure | Procedure[]): DefaultResponse => {
   if (Array.isArray(e)) {
     const response = e.map((data: Procedure) => {
       const { status, ...procedure } = data;
       return { ...procedure, status: Status[status] };
     });
-    return response;
+    return { data: response };
   }
 
   const { status, ...procedure } = e;
-  return { ...procedure, status: Status[status] };
+  return { data: { ...procedure, status: Status[status] } };
 };
 
 const createProcedure = async (data: Procedure) => {

@@ -5,8 +5,13 @@ import { RegisterUser } from "@pontalti/types/user.types";
 
 const router = Router();
 
-router.post("/register", (req: Request, res: Response, next: NextFunction) => {
-  authenticationService.register({ email: req.body.email, name: req.body.name, password: req.body.password } as RegisterUser)
+router.get('/test', (req, res) => {
+  res.status(200).json(req.headers);
+});
+
+
+router.post("/register", (req, res, next) => {
+  authenticationService.register({ email: req.body.email, name: req.body.name, password: req.body.password, isAdmin: req.body.isAdmin } as RegisterUser)
     .then((result) => {
       res.json(result);
     })
@@ -16,7 +21,7 @@ router.post("/register", (req: Request, res: Response, next: NextFunction) => {
     });
 });
 
-router.post("/login", (req: Request, res: Response, next: NextFunction) => {
+router.post("/login", (req, res, next) => {
   authenticationService.login(req.body.email, req.body.password)
     .then((result) => {
       res.json(result);

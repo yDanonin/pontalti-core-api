@@ -11,9 +11,8 @@ routes.post('/', validate(createCustomerSchema), (req: Request, res: Response, n
       res.json(result)
     })
     .catch(e => {
-      next(e)
-      // const httpError = createHttpError(e)
-      // next(httpError)
+      const httpError = createHttpError(e)
+      next(httpError)
     })
 })
 

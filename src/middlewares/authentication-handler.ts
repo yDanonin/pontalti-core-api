@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 const AuthenticationHandler = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.path.includes('/login') && !req.path.includes('/register')) {
+  if (!req.path.includes('/login') && !req.path.includes('/register') && !req.path.includes('/test')) {
     const authorization = req.header('Authorization');
 
     if (!authorization) {

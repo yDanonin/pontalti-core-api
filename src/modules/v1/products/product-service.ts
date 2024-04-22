@@ -1,18 +1,18 @@
 import { Product } from "@pontalti/types/product.types";
-import { Status, CommonRequest } from "@pontalti/types/common.types";
+import { Status, CommonRequest, DefaultResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/product";
 
-const handleProduct = (e: Product | Product[]) => {
+const handleProduct = (e: Product | Product[]): DefaultResponse => {
   if (Array.isArray(e)) {
     const response = e.map((data: Product) => {
       const { status, ...product } = data;
       return { ...product, status: Status[status] };
     });
-    return response;
+    return { data: response };
   }
 
   const { status, ...product } = e;
-  return { ...product, status: Status[status] };
+  return { data: { ...product, status: Status[status] } };
 };
 
 const createProduct = async (data: Product) => {

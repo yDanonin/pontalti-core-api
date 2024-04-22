@@ -1,18 +1,17 @@
 import { Classification, Employee } from "@pontalti/types/employee.types";
-import { CommonRequest } from "@pontalti/types/common.types";
+import { CommonRequest, DefaultResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/employee";
 
-const handleEmployee = (e: Employee | Employee[]) => {
+const handleEmployee = (e: Employee | Employee[]): DefaultResponse => {
   if (Array.isArray(e)) {
     const response = e.map((data: Employee) => {
       const { classification, ...employee } = data;
       return { ...employee, status: Classification[classification] };
     });
-    return response;
+    return { data: response };
   }
-
   const { classification, ...employee } = e;
-  return { ...employee, status: Classification[classification] };
+  return { data: { ...employee, status: Classification[classification] } };
 };
 
 const createEmployee = async (data: Employee) => {

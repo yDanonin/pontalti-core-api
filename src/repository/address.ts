@@ -12,7 +12,7 @@ const getAddress = async (id: number) => {
 
 const getAdresses = async (filters: CommonAddressRequest) => {
   const { page, perPage } = filters;
-  const skip = page !== 1 ? (page - 1) * perPage : undefined;
+  const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
   const adresses = await prisma.adresses.findMany({
     take: perPage,
     skip: skip

@@ -12,7 +12,7 @@ const getMachine = async (id: number) => {
 
 const getMachines = async (filters: CommonRequest) => {
   const { page, perPage } = filters;
-  const skip = page !== 1 ? (page - 1) * perPage : undefined;
+  const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
   return await prisma.machines.findMany({
     take: perPage,
     skip: skip

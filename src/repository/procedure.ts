@@ -12,7 +12,7 @@ const getProcedure = async (id: number) => {
 
 const getProcedures = async (filters: CommonRequest) => {
   const { page, perPage } = filters;
-  const skip = page !== 1 ? (page - 1) * perPage : undefined;
+  const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
   return await prisma.procedures.findMany({
     take: perPage,
     skip: skip
