@@ -16,6 +16,13 @@ routes.post('/', (req, res, next) => {
 
 routes.get('/', (req, res, next) => {
   procedureService.getAllProcedures(req.params)
+    .then(result => {
+      res.json(result)
+    })
+    .catch(e => {
+      const httpError = createHttpError(e)
+      next(httpError)
+    })
 })
 
 routes.get('/:id', (req, res, next) => {

@@ -1,13 +1,12 @@
 import express, { NextFunction, Request, Response, request, response } from 'express';
 import ErrorHandler from './src/middlewares/error-handler';
-import { HttpError } from 'http-errors';
 import versionRoutes from "@pontalti/modules/v1/routes"
 import AuthenticationHandler from './src/middlewares/authentication-handler';
 
 const app = express();
 app.use(express.json())
 
-app.use(AuthenticationHandler)
+// app.use(AuthenticationHandler)
 
 app.get('/', (req: Request, res: Response) => {
   return res.status(401);
