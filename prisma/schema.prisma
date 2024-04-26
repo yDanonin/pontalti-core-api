@@ -28,7 +28,7 @@ model adresses {
   public_place   String
   city           String
   state          String
-  complement     String
+  complement     String?
   address_number Int
 
   customers customers[]

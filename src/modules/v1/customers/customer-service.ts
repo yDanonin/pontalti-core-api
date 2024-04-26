@@ -43,7 +43,9 @@ const getCustomerById = async (id: number) => {
 
 const updatePartialCustomer = async (id: number, data: UpdatePartialCustomer) => {
   try {
-    if(data.debts){
+    const credit_limit = data.credit_limit | (await repository.getCustomer(id)).credit_limit
+    if(data.debts && data.debts > credit_limit){
+      data.status = 0
     }
 
 
