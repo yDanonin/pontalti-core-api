@@ -3,11 +3,19 @@ import { CommonRequest } from "@pontalti/types/common.types";
 import prisma, { dbErrorHandle } from "@pontalti/lib/prisma";
 
 const createEmployee = async (data: Employee) => {
-  return await prisma.employees.create({ data });
+  try{
+    return await prisma.employees.create({ data });
+  } catch(e) {
+    dbErrorHandle(e)
+  }
 };
 
 const getEmployee = async (id: number) => {
-  return await prisma.employees.findUnique({ where: { id } });
+  try{
+    return await prisma.employees.findUnique({ where: { id } });
+  } catch(e) {
+    dbErrorHandle(e)
+  }
 };
 
 const getEmployees = async (filters: CommonRequest) => {
