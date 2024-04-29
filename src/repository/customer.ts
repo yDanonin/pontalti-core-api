@@ -47,6 +47,7 @@ const createCustomer = async (data: CustomerRegister): Promise<Customer> => {
       }
     });
   } catch(e) {
+    console.log(e)
     dbErrorHandle(e)
   }
 

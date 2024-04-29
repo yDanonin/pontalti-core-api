@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node Index.ts",
+    "start": "ts-node index.ts",
     "start-dev": "ts-node-dev --ignore-watch node_modules --require tsconfig-paths/register index.ts",
     "prisma": "npx prisma migrate reset --force && npx prisma db push",
     "prisma-format": "npx prisma format",

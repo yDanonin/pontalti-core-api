@@ -1,6 +1,7 @@
 import { Customer, CustomerRequest, CustomerStatusString, UpdatePartialCustomer } from "@pontalti/types/customer.types";
 import { PaginationResponse, Status } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/customer";
+import { BusinessError } from "@pontalti/utils/errors";
 
 const handleStatusInCustomer = (c: Customer | PaginationResponse<Customer>) => {
   if ("data" in c) {
@@ -44,10 +45,15 @@ const getCustomerById = async (id: number) => {
 const updatePartialCustomer = async (id: number, data: UpdatePartialCustomer) => {
   try {
     const credit_limit = data.credit_limit | (await repository.getCustomer(id)).credit_limit
+    const debts = data.debts | (await repository.getCustomer(id)).debts
+    
+    if(data.status && debts > credit_limit && data.status == 1){
+      throw new BusinessError("Não foi possível atualizar o status do cliente, pois o cliente possui mais dividas do que limite de crédito")
+    }
+    
     if(data.debts && data.debts > credit_limit){
       data.status = 0
     }
-
 
     return handleStatusInCustomer((await repository.updatePartialCustomer(id, data)) as Customer);
   } catch (e: any) {

@@ -27,6 +27,7 @@ const getEmployees = async (filters: CommonRequest) => {
       skip: skip
     });
   } catch(e) {
+    console.log(e)
     dbErrorHandle(e)
   }
 };
