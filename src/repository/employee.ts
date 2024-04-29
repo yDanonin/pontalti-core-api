@@ -6,6 +6,7 @@ const createEmployee = async (data: Employee) => {
   try{
     return await prisma.employees.create({ data });
   } catch(e) {
+    console.log(e)
     dbErrorHandle(e)
   }
 };

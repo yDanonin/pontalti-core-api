@@ -16,12 +16,9 @@ const handleEmployee = (e: Employee | Employee[]): DefaultResponse => {
 
 const createEmployee = async (data: Employee) => {
   try{
-    if(data.admission){
-      data.admission = new Date(data.admission)
-    }
-    if(data.dismissal_date){
-      data.dismissal_date = new Date(data.dismissal_date)
-    }
+    data.admission = data.admission ? new Date(data.admission) : data.admission;
+    data.dismissal_date = data.dismissal_date ? new Date(data.dismissal_date) : data.dismissal_date;
+
     return handleEmployee((await repository.createEmployee(data)) as Employee);
   } catch(e){
     throw e
