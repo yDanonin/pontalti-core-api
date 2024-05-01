@@ -3,7 +3,7 @@ import { DefaultResponse } from "@pontalti/types/common.types";
 import jwt from 'jsonwebtoken'
 import repository from "@pontalti/repository/auth";
 import bcrypt, { compare } from 'bcrypt'
-import { UnauthorizedError } from "@pontalti/utils/errors";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "@pontalti/utils/errors";
 
 
 const register = async (data: RegisterUser) => {
@@ -33,14 +33,33 @@ const login = async (email: string, password: string) => {
       throw new UnauthorizedError('Credenciais inválidas. Verifique o email e senha e tente novamente.');
     }
 
-    const token = jwt.sign({ name: user.name }, process.env.PRIVATE_KEY, { expiresIn: '1d' });
+    const token = jwt.sign({ email: user.email }, process.env.PRIVATE_KEY, { expiresIn: '1d' });
     return { data: { token } } as DefaultResponse;
   } catch (e) {
     throw e;
   }
 }
 
+const changePassword = async (newPassword: string, token: string) => {
+  try{
+    const email = jwt.decode(token)['email'];
+    if(!email) throw new BadRequestError('Email não encontrado no token jwt.');
+
+    const user = await repository.getUserByEmail(email);
+    if(!user) throw new NotFoundError("Não foi possível encontrar o usuário, tente novamente mais tarde");
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    user.password = passwordHash
+    
+    const { password, ...userWithoutPassword } = await repository.updateUser(user.id, user);
+    return { data: userWithoutPassword } as DefaultResponse;
+  } catch(e) {
+    throw e
+  }
+}
+
 export default {
     register,
     login,
+    changePassword
 };

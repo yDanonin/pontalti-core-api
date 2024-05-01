@@ -32,4 +32,16 @@ router.post("/login", (req, res, next) => {
     });
 });
 
+router.post("/change-password", (req, res, next) => {
+  console.log(req.headers.authorization)
+  authenticationService.changePassword(req.body.newPassword, req.headers.authorization.split(' ')[1])
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((e) => {
+      const httpError = createHttpError(e);
+      next(httpError);
+    });
+});
+
 export default router;

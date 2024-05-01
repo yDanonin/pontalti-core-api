@@ -6,7 +6,7 @@ import AuthenticationHandler from './src/middlewares/authentication-handler';
 const app = express();
 app.use(express.json())
 
-// app.use(AuthenticationHandler)
+app.use(AuthenticationHandler)
 
 app.get('/', (req: Request, res: Response) => {
   return res.status(401);
