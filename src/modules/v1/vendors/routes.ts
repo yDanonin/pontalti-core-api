@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import venrdorService from "@pontalti/modules/v1/vendors/vendor-service";
+import { createVendorSchema } from "@pontalti/modules/v1/vendors/vendor-schema"
+import { validate } from "@pontalti/utils/validator";
+
 const routes = Router();
 
-routes.post('/', (req, res, next) => {
+routes.post('/', validate(createVendorSchema), (req, res, next) => {
   venrdorService.createVendor(req.body)
     .then(result => {
       res.json(result)

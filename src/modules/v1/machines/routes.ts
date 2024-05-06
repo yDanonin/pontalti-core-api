@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import machineService from "@pontalti/modules/v1/machines/machine-service";
+import { createMachineSchema } from "@pontalti/modules/v1/machines/machine-schema"
+import { validate } from "@pontalti/utils/validator";
+
 const routes = Router();
 
-routes.post('/', (req, res, next) => {
+routes.post('/', validate(createMachineSchema), (req, res, next) => {
   machineService.createMachine(req.body)
     .then(result => {
       res.json(result)

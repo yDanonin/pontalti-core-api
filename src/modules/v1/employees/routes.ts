@@ -1,9 +1,12 @@
 import {Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import employeeService from "./employee-service";
+import { createEmployeeSchema } from "@pontalti/modules/v1/employees/employee-schema"
+import { validate } from "@pontalti/utils/validator";
+
 const routes = Router();
 
-routes.post('/', (req, res, next) => {
+routes.post('/', validate(createEmployeeSchema), (req, res, next) => {
   employeeService.createEmployee(req.body)
     .then(result => {
       res.json(result)

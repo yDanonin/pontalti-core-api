@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import procedureService from "@pontalti/modules/v1/procedures/procedure-service";
+import { createProcedureSchema } from "@pontalti/modules/v1/procedures/procedure-schema"
+import { validate } from "@pontalti/utils/validator";
+
 const routes = Router();
 
-routes.post('/', (req, res, next) => {
+routes.post('/', validate(createProcedureSchema), (req, res, next) => {
   procedureService.createProcedure(req.body)
     .then(result => {
       res.json(result)

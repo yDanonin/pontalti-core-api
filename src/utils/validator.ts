@@ -1,4 +1,4 @@
-import yup from "yup";
+import * as yup from "yup";
 import { isError, InternalServerError } from "@pontalti/utils/errors"
 import { isFilled } from "@pontalti/utils/helper";
 

@@ -2,14 +2,12 @@ import { Router } from "express";
 import createHttpError from 'http-errors';
 import authenticationService from "@pontalti/modules/v1/auth/auth-service"
 import { RegisterUser } from "@pontalti/types/user.types";
+import { createUserSchema } from "@pontalti/modules/v1/users/user-schema"
+import { validate } from "@pontalti/utils/validator";
 
 const router = Router();
 
-router.get('/test', (req, res) => {
-  res.status(200).json(req.headers);
-});
-
-router.post("/register", (req, res, next) => {
+router.post("/register", validate(createUserSchema), (req, res, next) => {
   authenticationService.register({ email: req.body.email, name: req.body.name, password: req.body.password, isAdmin: req.body.isAdmin } as RegisterUser)
     .then((result) => {
       res.json(result);
@@ -41,6 +39,10 @@ router.post("/change-password", (req, res, next) => {
       const httpError = createHttpError(e);
       next(httpError);
     });
+});
+
+router.get('/test', (req, res) => {
+  res.status(200).json(req.headers);
 });
 
 export default router;

@@ -1,8 +1,8 @@
 import * as yup from 'yup';
-// import { validateCpf } from "@pontalti/modules/v1/customers/customer-validator";
-// import { custom } from '@pontalti/utils/validator';
+import { validateCpf } from "@pontalti/modules/v1/customers/customer-validator";
+import { custom } from '@pontalti/utils/validator';
 
-// custom(validateCpf)
+custom(validateCpf)
 
 const createCustomerSchema = yup.object({
   body: yup.object({

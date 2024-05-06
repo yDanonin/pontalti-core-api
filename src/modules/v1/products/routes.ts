@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import productService from "@pontalti/modules/v1/products/product-service";
+import { createProductSchema } from "@pontalti/modules/v1/products/product-schema"
+import { validate } from "@pontalti/utils/validator";
+
 const routes = Router();
 
-routes.post('/', (req, res, next) => {
+routes.post('/', validate(createProductSchema), (req, res, next) => {
   productService.createProduct(req.body)
     .then(result => {
       res.json(result)
