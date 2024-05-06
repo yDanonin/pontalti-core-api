@@ -1,7 +1,7 @@
 import { RegisterUser, User } from "@pontalti/types/user.types";
 import { DefaultResponse } from "@pontalti/types/common.types";
 import jwt from 'jsonwebtoken'
-import repository from "@pontalti/repository/auth";
+import repository from "@pontalti/repository/user";
 import bcrypt, { compare } from 'bcrypt'
 import { BadRequestError, NotFoundError, UnauthorizedError } from "@pontalti/utils/errors";
 
@@ -21,7 +21,7 @@ const register = async (data: RegisterUser) => {
 
 const login = async (email: string, password: string) => {
   try {
-    const user = await repository.login(email)
+    const user = await repository.getUserByEmail(email)
 
     if (!user) {
       throw new UnauthorizedError('Credenciais inválidas. Verifique o email e senha e tente novamente.');
@@ -33,7 +33,7 @@ const login = async (email: string, password: string) => {
       throw new UnauthorizedError('Credenciais inválidas. Verifique o email e senha e tente novamente.');
     }
 
-    const token = jwt.sign({ email: user.email }, process.env.PRIVATE_KEY, { expiresIn: '1d' });
+    const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, process.env.PRIVATE_KEY, { expiresIn: '1d' });
     return { data: { token } } as DefaultResponse;
   } catch (e) {
     throw e;
