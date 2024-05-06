@@ -3,11 +3,11 @@ import repository from "@pontalti/repository/user";
 
 const removePassword = (u: User | User[]) => {
   if (Array.isArray(u)){
-    u.map(user => {
-      const { password, ...userWithoutPassword } = user
-      return userWithoutPassword
-    })
-    return u
+    const data = u.map(user => {
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    });
+    return data;
   }
 
   const { password, ...userWithoutPassword } = u
