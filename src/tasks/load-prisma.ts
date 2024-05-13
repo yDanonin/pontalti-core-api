@@ -8,7 +8,7 @@ async function main() {
   const users = [
     {
       email: "admin@gmail.com",
-      password: "1234",
+      password: "admin@123456",
       name: "Admin",
       isAdmin: true
     }

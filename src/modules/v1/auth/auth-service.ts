@@ -34,7 +34,7 @@ const login = async (email: string, password: string) => {
     }
 
     const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, process.env.PRIVATE_KEY, { expiresIn: '1d' });
-    return { data: { token } } as DefaultResponse;
+    return { token, user };
   } catch (e) {
     throw e;
   }
