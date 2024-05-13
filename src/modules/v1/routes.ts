@@ -21,7 +21,7 @@ routes.use('/machines', machines);
 routes.use('/procedures', procedures);
 routes.use('/products', products);
 routes.use('/vendors', vendors);
-routes.use('/auth', auth);
+routes.use('/authentication', auth);
 routes.use('/users', users);
 
 export default routes;
