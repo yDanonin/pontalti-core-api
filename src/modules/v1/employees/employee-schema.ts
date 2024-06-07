@@ -1,12 +1,13 @@
 import { Classification } from '@pontalti/types/employee.types';
+import { sanitizeSpecialCharacters } from "@pontalti/utils/sanitizer";
 import * as yup from 'yup';
 
 const createEmployeeSchema = yup.object({
   body: yup.object({
     name: yup.string().required(),
-    phone: yup.string().required(),
-    cel_number: yup.string().required(),
-    cpf: yup.string().required(),
+    phone: yup.string().required().transform(sanitizeSpecialCharacters).length(10),
+    cel_number: yup.string().required().transform(sanitizeSpecialCharacters).length(11),
+    cpf: yup.string().required().transform(sanitizeSpecialCharacters),
     classification: yup.mixed<Classification>().oneOf([Classification.funcionario, Classification.em_teste, Classification.externo]).required(),
     admission: yup.date().required(),
     salary: yup.number().optional(),

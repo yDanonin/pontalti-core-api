@@ -6,12 +6,12 @@ const handleEmployee = (e: Employee | Employee[]): DefaultResponse => {
   if (Array.isArray(e)) {
     const response = e.map((data: Employee) => {
       const { classification, ...employee } = data;
-      return { ...employee, status: Classification[classification] };
+      return { ...employee, classification: Classification[classification] };
     });
     return { data: response };
   }
   const { classification, ...employee } = e;
-  return { data: { ...employee, status: Classification[classification] } };
+  return { data: { ...employee, classification: Classification[classification] } };
 };
 
 const createEmployee = async (data: Employee) => {
