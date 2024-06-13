@@ -1,6 +1,6 @@
 import { Customer, CustomerRegister, CustomerRequest } from "@pontalti/types/customer.types";
 import prisma, { dbErrorHandle } from "@pontalti/lib/prisma";
-import { PaginationResponse } from "@pontalti/types/common.types";
+import { CommonRequest, PaginationResponse } from "@pontalti/types/common.types";
 
 const defaultSelectedFieldForCustomers = {
   id: true,
@@ -18,6 +18,8 @@ const defaultSelectedFieldForCustomers = {
   secondary_line: true,
   cpf: true,
   cnpj: true,
+  created_at: true,
+  updated_at: true,
   address: {
     select: {
       id: true,
@@ -40,7 +42,9 @@ const createCustomer = async (data: CustomerRegister): Promise<Customer> => {
         ...customerData,
         address: {
           create: address
-        }
+        },
+        created_at: new Date(),
+        updated_at: new Date()
       },
       include: {
         address: true
@@ -61,7 +65,7 @@ const getCustomer = async (id: number): Promise<Customer> => {
   }
 };
 
-const getCustomers = async (filters: CustomerRequest): Promise<PaginationResponse<Customer>> => {
+const getCustomers = async (filters: CommonRequest<CustomerRequest>): Promise<PaginationResponse<Customer>> => {
   try {
     const {
       page,
@@ -148,7 +152,8 @@ const updatePartialCustomer = async (id: number, data: any): Promise<Customer> =
       where: { id },
       data: {
         ...existingCustomer,
-        ...data
+        ...data,
+        updated_at: new Date()
       },
       select: defaultSelectedFieldForCustomers
     });

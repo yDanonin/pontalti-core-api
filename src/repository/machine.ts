@@ -1,16 +1,22 @@
-import { Machine } from "@pontalti/types/machine.types";
+import { Machine, MachineRegister } from "@pontalti/types/machine.types";
 import { CommonRequest } from "@pontalti/types/common.types";
 import prisma from "@pontalti/lib/prisma";
 
-const createMachine = async (data: Machine) => {
-  return await prisma.machines.create({ data });
+const createMachine = async (data: MachineRegister) => {
+  return await prisma.machines.create({ 
+    data: {
+      ...data,
+      created_at: new Date(),
+      updated_at: new Date()
+    } 
+  });
 };
 
 const getMachine = async (id: number) => {
   return await prisma.machines.findUnique({ where: { id } });
 };
 
-const getMachines = async (filters: CommonRequest) => {
+const getMachines = async (filters: CommonRequest<Machine>) => {
   const { page, perPage } = filters;
   const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
   return await prisma.machines.findMany({
@@ -33,7 +39,8 @@ const updatePartialMachine = async (id: number, data: any) => {
     where: { id },
     data: {
       ...existingMachine,
-      ...data
+      ...data,
+      updated_at: new Date()
     }
   });
 

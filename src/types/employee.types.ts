@@ -14,4 +14,10 @@ export type Employee = {
   admission: Date;
   salary?: number;
   dismissal_date?: Date;
+  created_at: Date;
+  updated_at: Date;
 };
+
+export type EmployeeRegister = Omit<Employee, "id" | "created_at" | "updated_at">;
+
+export type EmployeeClassificationString =  Omit<Employee, "classification"> & { classification: string };

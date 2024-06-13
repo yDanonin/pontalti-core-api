@@ -17,13 +17,13 @@ export type Customer = {
   address: Address;
   cpf: string;
   cnpj: string;
+  created_at: Date;
+  updated_at: Date;
 };
 
-export type CustomerRegister = Omit<Customer, "id">;
+export type CustomerRegister = Omit<Customer, "id" | "created_at" | "updated_at">;
 
 export type CustomerRequest = CommonRequest<Omit<Customer, "credit_limit">>
-
-export type test = CommonRequest<Omit<Customer, "credit_limit">>
 
 export type CustomerStatusString = Omit<Customer, "status"> & { status: string };
 

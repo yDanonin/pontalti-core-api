@@ -1,16 +1,22 @@
-import { Vendor } from "@pontalti/types/vendor.types";
+import { Vendor, VendorRegister } from "@pontalti/types/vendor.types";
 import { CommonRequest } from "@pontalti/types/common.types";
 import prisma from "@pontalti/lib/prisma";
 
-const createVendor = async (data: Vendor) => {
-  return await prisma.vendors.create({ data });
+const createVendor = async (data: VendorRegister) => {
+  return await prisma.vendors.create({
+    data: {
+      ...data,
+      created_at: new Date(),
+      updated_at: new Date()
+    } 
+   });
 };
 
 const getVendor = async (id: number) => {
   return await prisma.vendors.findUnique({ where: { id } });
 };
 
-const getVendors = async (filters: CommonRequest) => {
+const getVendors = async (filters: CommonRequest<Vendor>) => {
   const { page, perPage } = filters;
   const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
   return await prisma.vendors.findMany({
@@ -33,7 +39,8 @@ const updatePartialVendor = async (id: number, data: any) => {
     where: { id },
     data: {
       ...existingVendor,
-      ...data
+      ...data,
+      updated_at: new Date()
     }
   });
 

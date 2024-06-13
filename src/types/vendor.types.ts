@@ -12,4 +12,8 @@ export type Vendor = {
   volume_purchases: number;
   purchases: number;
   invoicing: number;
+  created_at: Date;
+  updated_at: Date;
 };
+
+export type VendorRegister = Omit<Vendor, "id" | "created_at" | "updated_at">;

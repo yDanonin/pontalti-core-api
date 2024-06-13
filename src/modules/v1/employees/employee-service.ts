@@ -1,13 +1,15 @@
-import { Classification, Employee } from "@pontalti/types/employee.types";
-import { CommonRequest, DefaultResponse } from "@pontalti/types/common.types";
+import { Classification, Employee, EmployeeClassificationString } from "@pontalti/types/employee.types";
+import { CommonRequest, DefaultResponse, PaginationResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/employee";
 
-const handleEmployee = (e: Employee | Employee[]): DefaultResponse => {
-  if (Array.isArray(e)) {
-    const response = e.map((data: Employee) => {
+const handleEmployee = (e: Employee | PaginationResponse<Employee>): DefaultResponse => {
+  if ("data" in e) {
+    const { data, ...employee } = e
+    const newData = data.map((data: Employee) => {
       const { classification, ...employee } = data;
       return { ...employee, classification: Classification[classification] };
     });
+    const response = { data: newData, ...employee } as PaginationResponse<EmployeeClassificationString>;
     return { data: response };
   }
   const { classification, ...employee } = e;
@@ -26,7 +28,7 @@ const createEmployee = async (data: Employee) => {
 };
 
 const getAllEmployees = async (filters: CommonRequest) => {
-  return handleEmployee((await repository.getEmployees(filters)) as Employee[]);
+  return handleEmployee((await repository.getEmployees(filters)) as PaginationResponse<Employee>);
 };
 
 const getEmployeeById = async (id: number) => {

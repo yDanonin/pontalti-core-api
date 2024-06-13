@@ -1,16 +1,22 @@
-import { Product } from "@pontalti/types/product.types";
+import { Product, ProductRegister } from "@pontalti/types/product.types";
 import { CommonRequest } from "@pontalti/types/common.types";
 import prisma from "@pontalti/lib/prisma";
 
-const createProduct = async (data: Product) => {
-  return await prisma.products.create({ data });
+const createProduct = async (data: ProductRegister) => {
+  return await prisma.products.create({ 
+    data: {
+      ...data,
+      created_at: new Date(),
+      updated_at: new Date()
+    }  
+  });
 };
 
 const getProduct = async (id: number) => {
   return await prisma.products.findUnique({ where: { id } });
 };
 
-const getProducts = async (filters: CommonRequest) => {
+const getProducts = async (filters: CommonRequest<Product>) => {
   const { page, perPage } = filters;
   const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
   return await prisma.products.findMany({
@@ -33,7 +39,8 @@ const updatePartialProduct = async (id: number, data: any) => {
     where: { id },
     data: {
       ...existingProduct,
-      ...data
+      ...data,
+      updated_at: new Date()
     }
   });
 

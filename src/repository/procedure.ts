@@ -1,16 +1,22 @@
-import { Procedure } from "@pontalti/types/procedure.types";
+import { Procedure, ProcedureRegister } from "@pontalti/types/procedure.types";
 import { CommonRequest } from "@pontalti/types/common.types";
 import prisma from "@pontalti/lib/prisma";
 
-const createProcedure = async (data: Procedure) => {
-  return await prisma.procedures.create({ data });
+const createProcedure = async (data: ProcedureRegister) => {
+  return await prisma.procedures.create({ 
+    data: {
+      ...data,
+      created_at: new Date(),
+      updated_at: new Date()
+    } 
+  });
 };
 
 const getProcedure = async (id: number) => {
   return await prisma.procedures.findUnique({ where: { id } });
 };
 
-const getProcedures = async (filters: CommonRequest) => {
+const getProcedures = async (filters: CommonRequest<Procedure>) => {
   const { page, perPage } = filters;
   const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
   return await prisma.procedures.findMany({
@@ -33,7 +39,8 @@ const updatePartialProcedure = async (id: number, data: any) => {
     where: { id },
     data: {
       ...existingProcedure,
-      ...data
+      ...data,
+      updated_at: new Date()
     }
   });
 

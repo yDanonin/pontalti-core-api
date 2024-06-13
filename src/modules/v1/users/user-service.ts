@@ -2,6 +2,7 @@ import { User } from "@pontalti/types/user.types";
 import repository from "@pontalti/repository/user";
 
 const removePassword = (u: User | User[]) => {
+  if(!u) return u
   if (Array.isArray(u)){
     const data = u.map(user => {
       const { password, ...userWithoutPassword } = user;

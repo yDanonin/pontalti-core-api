@@ -12,4 +12,8 @@ export type Product = {
   character: string;
   moldes: number;
   equivalency: number;
+  created_at: Date;
+  updated_at: Date;
 };
+
+export type ProductRegister = Omit<Product, "id" | "created_at" | "updated_at">;

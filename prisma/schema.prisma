@@ -12,8 +12,8 @@ datasource db {
 
 // TODO: Review how access system will be.
 model users {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
   password String
   name     String
   isAdmin  Boolean? @default(false)
@@ -22,7 +22,7 @@ model users {
 //TODO: to use "viacep" api to search for a new address if we haven't it in our db
 // viacep: https://viacep.com.br
 model adresses {
-  id             Int    @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   zip_code       String
   neighborhood   String
   public_place   String
@@ -35,7 +35,7 @@ model adresses {
 }
 
 model customers {
-  id             Int     @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   status         Int
   addressId      Int
   credit_limit   Float
@@ -43,7 +43,7 @@ model customers {
   name           String
   phone          String
   cel_number     String
-  email          String  @unique
+  email          String   @unique
   store_name     String
   // review this attr bellow, because don't make sense deliver to be a customer's attr.
   // collect/deliveries, should be a request's attr.
@@ -52,6 +52,8 @@ model customers {
   secondary_line Boolean
   cpf            String?  @unique
   cnpj           String?  @unique
+  created_at     DateTime
+  updated_at     DateTime
 
   address adresses @relation(fields: [addressId], references: [id])
 }
@@ -68,16 +70,18 @@ model employees {
   admission      DateTime
   salary         Float?
   dismissal_date DateTime?
+  created_at     DateTime
+  updated_at     DateTime
 }
 
 // TODO: employee needs address.
 // TODO: Study better the "Faturamento na compra" implementation
 // TODO: Study better vendors business rules
 model vendors {
-  id               Int     @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   name             String
   store_name       String
-  cnpj             String  @unique
+  cnpj             String   @unique
   status           Int
   phone            String
   cel_number       String
@@ -85,11 +89,13 @@ model vendors {
   volume_purchases Float
   purchases        Float
   invoicing        Float
+  created_at       DateTime
+  updated_at       DateTime
 }
 
 // TODO: Study better vendors business rules
 model products {
-  id           Int    @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   status       Int
   volume_sales Float
   sales        Float
@@ -100,22 +106,28 @@ model products {
   character    String
   moldes       Int
   equivalency  Float
+  created_at   DateTime
+  updated_at   DateTime
 }
 
 // TODO: Study better vendors business rules
 model machines {
-  id              Int    @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   model           String
   machine_number  Int
   status          Int
   location        String
   location_status Int
+  created_at      DateTime
+  updated_at      DateTime
 }
 
 // TODO: Study better vendors business rules
 model procedures {
-  id           Int    @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   process_name String
   status       Int
   workers      Int
+  created_at   DateTime
+  updated_at   DateTime
 }
