@@ -17,11 +17,17 @@ const AuthenticationHandler = (req: Request, res: Response, next: NextFunction) 
         return res.status(401).json({ message: 'Unauthorized: Invalid authentication token. Please make sure to provide a valid JWT token in the Authorization header.' });
       }
 
-      if(decoded && !userService.getUserByEmail(decoded.email)) {
-        return res.status(401).json({ message: 'Unauthorized: Invalid authentication token. Please make sure to provide a valid JWT token in the Authorization header.' });
+      if(decoded) {
+        userService.getUserByEmail(decoded.email)
+          .then(u => {
+            if(!u) return res.status(401).json({ message: 'Unauthorized: Invalid authentication token. Please make sure to provide a valid JWT token in the Authorization header.' });
+            next()
+          })
+          .catch(e => {
+            console.log(e)
+            return res.status(500).json({ message: e.message });
+          })
       }
-      
-      next();
     });
   }
   else{

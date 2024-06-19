@@ -31,6 +31,7 @@ model adresses {
   complement     String?
   address_number Int
 
+  vendors vendors[]
   customers customers[]
 }
 
@@ -80,6 +81,7 @@ model employees {
 model vendors {
   id               Int      @id @default(autoincrement())
   name             String
+  addressId        Int
   store_name       String
   cnpj             String   @unique
   status           Int
@@ -91,6 +93,8 @@ model vendors {
   invoicing        Float
   created_at       DateTime
   updated_at       DateTime
+
+  address adresses @relation(fields: [addressId], references: [id])
 }
 
 // TODO: Study better vendors business rules

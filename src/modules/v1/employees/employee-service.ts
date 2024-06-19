@@ -2,7 +2,7 @@ import { Classification, Employee, EmployeeClassificationString } from "@pontalt
 import { CommonRequest, DefaultResponse, PaginationResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/employee";
 
-const handleEmployee = (e: Employee | PaginationResponse<Employee>): DefaultResponse => {
+const handleEmployee = (e: Employee | PaginationResponse<Employee>) => {
   if ("data" in e) {
     const { data, ...employee } = e
     const newData = data.map((data: Employee) => {
@@ -13,13 +13,12 @@ const handleEmployee = (e: Employee | PaginationResponse<Employee>): DefaultResp
     return { data: response };
   }
   const { classification, ...employee } = e;
-  return { data: { ...employee, classification: Classification[classification] } };
+  return { ...employee, classification: Classification[classification] };
 };
 
 const createEmployee = async (data: Employee) => {
   try{
     data.admission = data.admission ? new Date(data.admission) : data.admission;
-    data.dismissal_date = data.dismissal_date ? new Date(data.dismissal_date) : data.dismissal_date;
 
     return handleEmployee((await repository.createEmployee(data)) as Employee);
   } catch(e){

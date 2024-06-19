@@ -3,7 +3,7 @@ import * as yup from 'yup';
 
 const createProductSchema = yup.object({
   body: yup.object({
-    status: yup.mixed<Status>().oneOf([Status.suspenso, Status.operacional]).required(),
+    status: yup.mixed<Status>().oneOf([Status.Suspenso, Status.Operacional]).required(),
     volume_sales: yup.number().required().positive(),
     sales: yup.number().required().positive(),
     invoicing: yup.number().required().positive(),

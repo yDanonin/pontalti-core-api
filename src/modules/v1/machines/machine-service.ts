@@ -2,7 +2,7 @@ import { Machine } from "@pontalti/types/machine.types";
 import { Status, CommonRequest, DefaultResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/machine";
 
-const handleMachine = (e: Machine | Machine[]): DefaultResponse => {
+const handleMachine = (e: Machine | Machine[]) => {
   if (Array.isArray(e)) {
     const response = e.map((data: Machine) => {
       const { status, ...machine } = data;
@@ -12,7 +12,7 @@ const handleMachine = (e: Machine | Machine[]): DefaultResponse => {
   }
 
   const { status, ...machine } = e;
-  return { data: { ...machine, status: Status[status] } };
+  return  { ...machine, status: Status[status] } ;
 };
 
 const createMachine = async (data: Machine) => {

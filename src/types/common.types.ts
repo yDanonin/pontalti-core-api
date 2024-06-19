@@ -1,6 +1,6 @@
 export enum Status {
-  suspenso,
-  operacional
+  Suspenso,
+  Operacional
 }
 
 export type PaginationResponse<T = unknown> = {

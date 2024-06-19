@@ -8,13 +8,22 @@ const createVendorSchema = yup.object({
     name: yup.string().required(),
     store_name: yup.string().required(),
     cnpj: yup.string().required().transform(sanitizeSpecialCharacters),
-    status: yup.mixed<Status>().oneOf([Status.suspenso, Status.operacional]).required(),
+    status: yup.mixed<Status>().oneOf([Status.Suspenso, Status.Operacional]).required(),
     phone: yup.string().required().transform(sanitizeSpecialCharacters).length(10),
     cel_number: yup.string().required().transform(sanitizeSpecialCharacters).length(11),
     deliver: yup.boolean().required().transform(sanitizeBoolean),
     volume_purchases: yup.number().required().positive(),
     purchases: yup.number().required().positive(),
-    invoicing: yup.number().required().positive()
+    invoicing: yup.number().required().positive(),
+    address: yup.object({
+      zip_code: yup.string().required().transform(sanitizeSpecialCharacters),
+      neighborhood: yup.string().required(),
+      public_place: yup.string().required(),
+      city: yup.string().required(),
+      state: yup.string().required().length(2),
+      complement: yup.string().required(),
+      address_number: yup.number().required()
+    })
   })
 }).test('DocumentValidator', 'A valid CNPJ is required', function(value) {
   const b = value.body;

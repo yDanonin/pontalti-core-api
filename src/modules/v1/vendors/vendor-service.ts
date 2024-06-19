@@ -2,7 +2,7 @@ import { Vendor } from "@pontalti/types/vendor.types";
 import { Status, CommonRequest, DefaultResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/vendor";
 
-const handleVendor = (e: Vendor | Vendor[]): DefaultResponse => {
+const handleVendor = (e: Vendor | Vendor[]) => {
   if (Array.isArray(e)) {
     const response = e.map((data: Vendor) => {
       const { status, ...vendor } = data;
@@ -12,7 +12,7 @@ const handleVendor = (e: Vendor | Vendor[]): DefaultResponse => {
   }
 
   const { status, ...vendor } = e;
-  return { data: { ...vendor, status: Status[status] } };
+  return { ...vendor, status: Status[status] };
 };
 
 const createVendor = async (data: Vendor) => {

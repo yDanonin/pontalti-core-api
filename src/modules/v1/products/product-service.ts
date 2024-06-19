@@ -2,7 +2,7 @@ import { Product } from "@pontalti/types/product.types";
 import { Status, CommonRequest, DefaultResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/product";
 
-const handleProduct = (e: Product | Product[]): DefaultResponse => {
+const handleProduct = (e: Product | Product[]) => {
   if (Array.isArray(e)) {
     const response = e.map((data: Product) => {
       const { status, ...product } = data;
@@ -12,7 +12,7 @@ const handleProduct = (e: Product | Product[]): DefaultResponse => {
   }
 
   const { status, ...product } = e;
-  return { data: { ...product, status: Status[status] } };
+  return { ...product, status: Status[status] };
 };
 
 const createProduct = async (data: Product) => {
