@@ -9,8 +9,7 @@ const handleEmployee = (e: Employee | PaginationResponse<Employee>) => {
       const { classification, ...employee } = data;
       return { ...employee, classification: Classification[classification] };
     });
-    const response = { data: newData, ...employee } as PaginationResponse<EmployeeClassificationString>;
-    return { data: response };
+    return { data: newData, ...employee } as PaginationResponse<EmployeeClassificationString>;
   }
   const { classification, ...employee } = e;
   return { ...employee, classification: Classification[classification] };
