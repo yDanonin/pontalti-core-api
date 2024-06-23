@@ -26,7 +26,7 @@ const createCustomerSchema = yup.object({
       public_place: yup.string().required(),
       city: yup.string().required(),
       state: yup.string().required().length(2),
-      complement: yup.string().required(),
+      complement: yup.string().optional(),
       address_number: yup.number().required()
     })
   })
