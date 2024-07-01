@@ -3,8 +3,11 @@ import createHttpError from "http-errors";
 import employeeService from "./employee-service";
 import { createEmployeeSchema } from "@pontalti/modules/v1/employees/employee-schema"
 import { validate } from "@pontalti/utils/validator";
+import work_hours from '@pontalti/modules/v1/employees/work-hours/routes'
 
 const routes = Router();
+
+routes.use('/work-hours', work_hours)
 
 routes.post('/', validate(createEmployeeSchema), (req, res, next) => {
   employeeService.createEmployee(req.body)

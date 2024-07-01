@@ -11,7 +11,7 @@ datasource db {
 // the information and just throw there or apply 3FN that we will need to create more tables like a state table?
 
 // TODO: Review how access system will be.
-model users {
+model Users {
   id       Int      @id @default(autoincrement())
   email    String   @unique
   password String
@@ -21,7 +21,7 @@ model users {
 
 //TODO: to use "viacep" api to search for a new address if we haven't it in our db
 // viacep: https://viacep.com.br
-model adresses {
+model Adresses {
   id             Int     @id @default(autoincrement())
   zip_code       String
   neighborhood   String
@@ -31,14 +31,14 @@ model adresses {
   complement     String?
   address_number Int
 
-  vendors vendors[]
-  customers customers[]
+  vendors   Vendors[]
+  customers Customers[]
 }
 
-model customers {
+model Customers {
   id             Int      @id @default(autoincrement())
   status         Int
-  addressId      Int
+  address_id     Int
   credit_limit   Float
   debts          Float
   name           String
@@ -53,15 +53,15 @@ model customers {
   secondary_line Boolean
   cpf            String?  @unique
   cnpj           String?  @unique
-  created_at     DateTime
+  created_at     DateTime @default(now())
   updated_at     DateTime
 
-  address adresses @relation(fields: [addressId], references: [id])
+  address Adresses @relation(fields: [address_id], references: [id])
 }
 
 // TODO: employee needs address.
 // TODO: Some doubts in how classification will works and confirm if phone and cel_number will be required.
-model employees {
+model Employees {
   id             Int       @id @default(autoincrement())
   name           String
   phone          String
@@ -71,17 +71,20 @@ model employees {
   admission      DateTime
   salary         Float?
   dismissal_date DateTime?
-  created_at     DateTime
+  created_at     DateTime  @default(now())
   updated_at     DateTime
+
+  schedules EmployeeSchedules[]
+  workHours EmployeeWorkHours[]
 }
 
 // TODO: employee needs address.
 // TODO: Study better the "Faturamento na compra" implementation
 // TODO: Study better vendors business rules
-model vendors {
+model Vendors {
   id               Int      @id @default(autoincrement())
   name             String
-  addressId        Int
+  address_id       Int
   store_name       String
   cnpj             String   @unique
   status           Int
@@ -91,14 +94,14 @@ model vendors {
   volume_purchases Float
   purchases        Float
   invoicing        Float
-  created_at       DateTime
+  created_at       DateTime @default(now())
   updated_at       DateTime
 
-  address adresses @relation(fields: [addressId], references: [id])
+  address Adresses @relation(fields: [address_id], references: [id])
 }
 
 // TODO: Study better vendors business rules
-model products {
+model Products {
   id           Int      @id @default(autoincrement())
   status       Int
   volume_sales Float
@@ -110,28 +113,53 @@ model products {
   character    String
   moldes       Int
   equivalency  Float
-  created_at   DateTime
+  created_at   DateTime @default(now())
   updated_at   DateTime
 }
 
 // TODO: Study better vendors business rules
-model machines {
+model Machines {
   id              Int      @id @default(autoincrement())
   model           String
   machine_number  Int
   status          Int
   location        String
   location_status Int
-  created_at      DateTime
+  created_at      DateTime @default(now())
   updated_at      DateTime
 }
 
 // TODO: Study better vendors business rules
-model procedures {
+model Procedures {
   id           Int      @id @default(autoincrement())
   process_name String
   status       Int
   workers      Int
-  created_at   DateTime
+  created_at   DateTime @default(now())
   updated_at   DateTime
+}
+
+model EmployeeSchedules {
+  id          Int      @id @default(autoincrement())
+  employee_id Int
+  day_of_week Int
+  start_time  DateTime 
+  end_time    DateTime
+  created_at  DateTime @default(now())
+  updated_at  DateTime
+
+  employee Employees @relation(fields: [employee_id], references: [id])
+
+  @@index([employee_id, day_of_week], name: "employee_dayOfWeek_idx")
+}
+
+model EmployeeWorkHours {
+  id          Int       @id @default(autoincrement())
+  employee_id Int
+  clock_in    DateTime
+  clock_out   DateTime?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  employee Employees @relation(fields: [employee_id], references: [id])
 }

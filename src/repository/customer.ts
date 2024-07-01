@@ -5,7 +5,7 @@ import { CommonRequest, PaginationResponse } from "@pontalti/types/common.types"
 const defaultSelectedFieldForCustomers = {
   id: true,
   status: true,
-  addressId: true,
+  address_id: true,
   credit_limit: true,
   debts: true,
   name: true,

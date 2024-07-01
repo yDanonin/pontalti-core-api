@@ -50,7 +50,7 @@ async function main() {
     store_name: "Magalu",
     credit_limit: 1000,
     debts: 0,
-    addressId: 1,
+    address_id: 1,
   };
 
   for (let i = 1; i <= 12; i++) {
@@ -153,7 +153,7 @@ async function main() {
     volume_purchases: 20,
     purchases: 20,
     invoicing: 20,
-    addressId: 1,
+    address_id: 1,
   };
 
   for (let i = 1; i <= 5; i++) {
@@ -168,6 +168,28 @@ async function main() {
       data: vendorData
     });
   };
+
+  // registrando pontos
+  const totalRecords = 120000;
+  const employees = [1, 2, 3, 4, 5];
+  let currentDate = new Date();
+  currentDate.setHours(8, 0, 0, 0); 
+
+  for (let i = 0; i < totalRecords; i++) {
+    const employee_id = employees[i % employees.length];
+    
+    await dbClient.employeeWorkHours.create({
+      data: {
+        employee_id: employee_id,
+        clock_in: new Date(currentDate),
+        clock_out: new Date(currentDate.getTime() + 9 * 60 * 60 * 1000), // Adiciona 9 horas ao clock_in
+      }
+    });
+
+    if ((i + 1) % 4 === 0) {
+      currentDate.setDate(currentDate.getDate() - 1);
+    }
+  }
 };
 
 main()
