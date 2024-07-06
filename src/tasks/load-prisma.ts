@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import userService from "@pontalti/modules/v1/auth/auth-service";
+import bcrypt from 'bcrypt'
 
 const dbClient = new PrismaClient();
 
@@ -10,17 +11,15 @@ async function main() {
   }
 
   // registering users
-  const users = [
-    {
-      email: "admin@gmail.com",
-      password: "123",
-      name: "Admin",
-      isAdmin: true
-    }
-  ];
-
-  for (const user of users){
-    userService.register(user)
+  const user: any = {
+    password: await bcrypt.hash("123", 10),
+  }
+    
+  for (let i = 0; i <= 5; i++){
+    user.email = `${i}admin@gmail.com`
+    user.name = `Admin ${i}`
+    user.isAdmin = Boolean(Math.floor(Math.random() * 2))
+    await dbClient.users.create({ data: user })
   };
 
   // registering address
@@ -77,6 +76,7 @@ async function main() {
   }
 
   for (let i = 0; i <= 5; i++) {
+    employeeData.email = `${i+1}admin@gmail.com`
     employeeData.classification = Math.floor(Math.random() * 3);
     employeeData.salary = getRandomNumber(1000, 5000)
     employeeData.name = `Hodor ${i}`;
@@ -170,10 +170,10 @@ async function main() {
   };
 
   // registrando pontos
-  const totalRecords = 120000;
+  const totalRecords = 100;
   const employees = [1, 2, 3, 4, 5];
   let currentDate = new Date();
-  currentDate.setHours(8, 0, 0, 0); 
+  currentDate.setHours(9, 0, 0, 0); 
 
   for (let i = 0; i < totalRecords; i++) {
     const employee_id = employees[i % employees.length];
@@ -182,7 +182,15 @@ async function main() {
       data: {
         employee_id: employee_id,
         clock_in: new Date(currentDate),
-        clock_out: new Date(currentDate.getTime() + 9 * 60 * 60 * 1000), // Adiciona 9 horas ao clock_in
+        clock_out: new Date(currentDate.getTime() + 3 * 60 * 60 * 1000),
+      }
+    });
+
+    await dbClient.employeeWorkHours.create({
+      data: {
+        employee_id: employee_id,
+        clock_in: new Date(currentDate.getTime() + 4 * 60 * 60 * 1000),
+        clock_out: new Date(currentDate.getTime() + 9 * 60 * 60 * 1000),
       }
     });
 

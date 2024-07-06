@@ -1,6 +1,7 @@
 import { EmployeeWorkHour, EmployeeWorkHourRegister, EmployeeWorkHourFilters } from "@pontalti/types/employee-work-hour.types";
 import { CommonRequest, PaginationResponse } from "@pontalti/types/common.types";
 import prisma, { dbErrorHandle } from "@pontalti/lib/prisma";
+import { startAndEndOfDate } from "@pontalti/utils/helper";
 
 const createEmployeeWorkHour = async (data: EmployeeWorkHourRegister) => {
   try{
@@ -13,7 +14,7 @@ const createEmployeeWorkHour = async (data: EmployeeWorkHourRegister) => {
 
 const getEmployeeWorkHour = async (id: number) => {
   try{
-    return await prisma.employees.findUnique({ where: { id } });
+    return await prisma.employeeWorkHours.findUnique({ where: { id } });
   } catch(e) {
     dbErrorHandle(e)
   }
@@ -28,13 +29,14 @@ const getEmployeesWorkHours = async (filters: EmployeeWorkHourFilters) => {
     } = filters
 
     const selectedFields = {
+      id: true,
       clock_in: true,
-      clock_out: true
+      clock_out: true,
     }
 
     const whereClause = {
       employee_id: employee_id,
-      clock_in: { gte: startDate, lte: endDate }
+      clock_in: { gte: startAndEndOfDate(startDate).startOfDay, lte: startAndEndOfDate(endDate).endOfDay }
     };
 
 
@@ -46,7 +48,7 @@ const getEmployeesWorkHours = async (filters: EmployeeWorkHourFilters) => {
       }
     })
 
-    console.log(employeeWorkHours)
+    // console.log(employeeWorkHours)
 
 
     return employeeWorkHours
@@ -57,37 +59,57 @@ const getEmployeesWorkHours = async (filters: EmployeeWorkHourFilters) => {
 };
 
 
+const getTodayEmployeeWorkHour = async (employee_id: number) => {
+  try{
+    console.log(10)
+    const startDate = startAndEndOfDate(new Date()).startOfDay;
+    console.log(1.2)
+    return await prisma.employeeWorkHours.findMany({ 
+      where: { employee_id: employee_id, created_at: { gte: startDate } },
+      orderBy: { created_at: 'desc' } 
+    });
+  } catch(e) {
+    dbErrorHandle(e)
+  }
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updatePartialEmployeeWorkHour = async (id: number, data: any) => {
-  const existingEmployee = await prisma.employees.findUnique({
+  const existingEmployeeWorkHour = await prisma.employeeWorkHours.findUnique({
     where: { id }
   });
 
-  if (!existingEmployee) {
+  console.log(2.1)
+  console.log(id)
+  console.log(existingEmployeeWorkHour)
+
+  if (!existingEmployeeWorkHour) {
     throw new Error("Employee Work Hour not found");
   }
+  console.log(2.2)
 
-  const updatedEmployee = await prisma.employees.update({
+  const updatedEmployee = await prisma.employeeWorkHours.update({
     where: { id },
     data: {
-      ...existingEmployee,
+      ...existingEmployeeWorkHour,
       ...data,
       updated_at: new Date()
     }
   });
+  console.log(2.3)
 
   return updatedEmployee;
 };
 
 const deleteEmployeeWorkHour = async (id: number) => {
-  return await prisma.employees.delete({ where: { id } });
+  return await prisma.employeeWorkHours.delete({ where: { id } });
 };
 
 export default {
   createEmployeeWorkHour,
   getEmployeeWorkHour,
   getEmployeesWorkHours,
+  getTodayEmployeeWorkHour,
   updatePartialEmployeeWorkHour,
   deleteEmployeeWorkHour
 };

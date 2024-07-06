@@ -6,6 +6,7 @@ export enum Classification {
 
 export type Employee = {
   id: number;
+  email: string;
   name: string;
   phone: string;
   cel_number: string;
@@ -18,6 +19,6 @@ export type Employee = {
   updated_at: Date;
 };
 
-export type EmployeeRegister = Omit<Employee, "id" | "created_at" | "updated_at">;
+export type EmployeeRegister = Omit<Employee, "id" | "created_at" | "updated_at">
 
 export type EmployeeClassificationString =  Omit<Employee, "classification"> & { classification: string };

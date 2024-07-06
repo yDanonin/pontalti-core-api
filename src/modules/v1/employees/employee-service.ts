@@ -1,4 +1,4 @@
-import { Classification, Employee, EmployeeClassificationString } from "@pontalti/types/employee.types";
+import { Classification, Employee, EmployeeClassificationString, EmployeeRegister } from "@pontalti/types/employee.types";
 import { CommonRequest, DefaultResponse, PaginationResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/employee";
 
@@ -15,7 +15,7 @@ const handleEmployee = (e: Employee | PaginationResponse<Employee>) => {
   return { ...employee, classification: Classification[classification] };
 };
 
-const createEmployee = async (data: Employee) => {
+const createEmployee = async (data: EmployeeRegister) => {
   try{
     data.admission = data.admission ? new Date(data.admission) : data.admission;
 

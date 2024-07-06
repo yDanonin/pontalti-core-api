@@ -4,13 +4,7 @@ import prisma, { dbErrorHandle } from "@pontalti/lib/prisma";
 
 const createEmployee = async (data: EmployeeRegister) => {
   try{
-    return await prisma.employees.create({ 
-      data: {
-        ...data,
-        created_at: new Date(),
-        updated_at: new Date()
-      } 
-    });
+    return await prisma.employees.create({ data });
   } catch(e) {
     console.log(e)
     dbErrorHandle(e)
@@ -80,6 +74,15 @@ const getEmployees = async (filters: CommonRequest<Employee>): Promise<Paginatio
   }
 };
 
+const getEmployeeByEmail = async (email: string): Promise<Employee> => {
+  try {
+    return await prisma.employees.findUnique({ where: { email }})
+  } catch(e) {
+    console.log(e)
+    dbErrorHandle(e)
+  }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updatePartialEmployee = async (id: number, data: any) => {
   const existingEmployee = await prisma.employees.findUnique({
@@ -94,8 +97,7 @@ const updatePartialEmployee = async (id: number, data: any) => {
     where: { id },
     data: {
       ...existingEmployee,
-      ...data,
-      updated_at: new Date()
+      ...data
     }
   });
 
@@ -110,6 +112,7 @@ export default {
   createEmployee,
   getEmployee,
   getEmployees,
+  getEmployeeByEmail,
   updatePartialEmployee,
   deleteEmployee
 };

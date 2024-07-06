@@ -63,6 +63,7 @@ model Customers {
 // TODO: Some doubts in how classification will works and confirm if phone and cel_number will be required.
 model Employees {
   id             Int       @id @default(autoincrement())
+  email          String    @unique
   name           String
   phone          String
   cel_number     String
@@ -72,7 +73,7 @@ model Employees {
   salary         Float?
   dismissal_date DateTime?
   created_at     DateTime  @default(now())
-  updated_at     DateTime
+  updated_at     DateTime  @updatedAt
 
   schedules EmployeeSchedules[]
   workHours EmployeeWorkHours[]
@@ -143,7 +144,7 @@ model EmployeeSchedules {
   id          Int      @id @default(autoincrement())
   employee_id Int
   day_of_week Int
-  start_time  DateTime 
+  start_time  DateTime
   end_time    DateTime
   created_at  DateTime @default(now())
   updated_at  DateTime

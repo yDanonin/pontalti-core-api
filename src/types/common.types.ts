@@ -1,3 +1,6 @@
+import {Request} from "express";
+import { User } from "./user.types";
+
 export enum Status {
   Suspenso,
   Operacional
@@ -19,3 +22,5 @@ export type CommonRequest<T = unknown> = Partial<T> & Partial<{
   page: number;
   perPage: number;
 }>
+
+export type CustomRequest = Request & { user: Omit<User, "password"> }
