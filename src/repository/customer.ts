@@ -65,7 +65,7 @@ const getCustomer = async (id: number): Promise<Customer> => {
   }
 };
 
-const getCustomers = async (filters: CommonRequest<CustomerRequest>): Promise<PaginationResponse<Customer>> => {
+const getCustomers = async (filters: CustomerRequest): Promise<PaginationResponse<Customer>> => {
   try {
     const {
       page,

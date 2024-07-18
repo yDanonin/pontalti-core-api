@@ -2,8 +2,6 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import workHourService from "./work-hour-service";
 import { CustomRequest } from "@pontalti/types/common.types";
-import { filtersSchema } from "./work-hour-schema";
-import { validate } from "@pontalti/utils/validator";
 
 const routes = Router();
 
