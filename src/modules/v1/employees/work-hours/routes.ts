@@ -57,6 +57,17 @@ routes.get('/by-day', (req: Request, res: Response, next: NextFunction) => {
     })
 })
 
+routes.get('/today', (req: Request, res: Response, next: NextFunction) => {
+  workHourService.getAllWorkHoursToday()
+    .then(result => {
+      res.json(result)
+    })
+    .catch(e => {
+      const httpError = createHttpError(e)
+      next(httpError)
+    })
+})
+
 routes.get('/test', (req, res) => {
   res.status(200).json(req.headers);
 });

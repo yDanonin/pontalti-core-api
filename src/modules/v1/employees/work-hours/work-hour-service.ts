@@ -1,9 +1,7 @@
-import { CommonRequest, DefaultResponse, PaginationResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/employee-work-hour";
 import employeeRepository from "@pontalti/repository/employee"
-import { EmployeeWorkHour, EmployeeWorkHourFilters, EmployeeWorkHourRegister, EmployeeWorkHourResponse, WorkHour } from "@pontalti/types/employee-work-hour.types";
+import { EmployeeWorkHourFilters } from "@pontalti/types/employee-work-hour.types";
 import { User } from "@pontalti/types/user.types";
-import { startAndEndOfDate } from "@pontalti/utils/helper";
 
 const calculateHoursWorked = (registros: { clock_in: Date; clock_out: Date }[]) => {
   const groupedByDate = registros.reduce((acc, curr) => {
@@ -47,20 +45,20 @@ const calculateHoursWorked = (registros: { clock_in: Date; clock_out: Date }[]) 
 };
 
 const createEmployee = async (user: Omit<User, "password">, datetime?: Date) => {
-  try{
+  try {
     const time = datetime ? datetime : new Date()
     const employee = await employeeRepository.getEmployeeByEmail(user.email);
     if (!employee) throw new Error();
     const workHours = await repository.getTodayEmployeeWorkHour(employee.id);
-    if(workHours.length >= 1 ){
+    if (workHours.length >= 1) {
       const lastWorkHour = workHours[0]
-      const response = lastWorkHour.clock_out ? 
+      const response = lastWorkHour.clock_out ?
         await repository.createEmployeeWorkHour({ employee_id: employee.id, clock_in: time })
-        : updatePartialEmployeeWorkHour(lastWorkHour.id, { clock_out: time});
+        : updatePartialEmployeeWorkHour(lastWorkHour.id, { clock_out: time });
       return response
     }
     return await repository.createEmployeeWorkHour({ employee_id: employee.id, clock_in: time });
-  } catch(e){
+  } catch (e) {
     throw e
   }
 };
@@ -74,7 +72,26 @@ const getEmployeeWorkHourById = async (id: number) => {
 };
 
 const getEmployeeWorkHourByDay = async (day: Date, employee_id: number) => {
-  return await repository.getEmployeesWorkHours({employee_id, startDate: day, endDate: day})
+  return await repository.getEmployeesWorkHours({ employee_id, startDate: day, endDate: day })
+}
+
+const getAllWorkHoursToday = async () => {
+  const workHours = await repository.getTodayWorkHour()
+
+  const groupedByEmployee = workHours.reduce((acc, workHour) => {
+    const employeeId = workHour.employee_id;
+    if (!acc[employeeId]) {
+      acc[employeeId] = {
+        employe_id: workHour.employee_id,
+        workHours: [],
+      };
+    }
+    acc[employeeId].workHours.push(workHour);
+    return acc;
+  }, {});
+
+  return groupedByEmployee;
+
 }
 
 const updatePartialEmployeeWorkHour = async (id: number, data: unknown) => {
@@ -90,6 +107,7 @@ export default {
   getWorkHours,
   getEmployeeWorkHourById,
   getEmployeeWorkHourByDay,
+  getAllWorkHoursToday,
   updatePartialEmployeeWorkHour,
   deleteEmployeeWorkHour
 };

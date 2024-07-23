@@ -73,6 +73,19 @@ const getTodayEmployeeWorkHour = async (employee_id: number) => {
   }
 };
 
+const getTodayWorkHour = async () => {
+  try{
+    const startDate = startAndEndOfDate(new Date()).startOfDay;
+    return await prisma.employeeWorkHours.findMany({ 
+      where: { created_at: { gte: startDate } },
+      orderBy: { created_at: 'desc' },
+      // include: { employee: true }
+    });
+  } catch(e) {
+    dbErrorHandle(e)
+  }
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updatePartialEmployeeWorkHour = async (id: number, data: any) => {
   const existingEmployeeWorkHour = await prisma.employeeWorkHours.findUnique({
@@ -110,6 +123,7 @@ export default {
   getEmployeeWorkHour,
   getEmployeesWorkHours,
   getTodayEmployeeWorkHour,
+  getTodayWorkHour,
   updatePartialEmployeeWorkHour,
   deleteEmployeeWorkHour
 };
