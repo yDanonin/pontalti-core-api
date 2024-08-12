@@ -1,9 +1,12 @@
-import {  Vacation, VacationRegister } from "@pontalti/types/vacation.types";
+import { Vacation, VacationRegister } from "@pontalti/types/vacation.types";
 import { CommonRequest, DefaultResponse, PaginationResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/vacation";
 
 const createVacation = async (data: VacationRegister) => {
   try{
+    data.start_date = new Date(data.start_date)
+    data.end_date = new Date(data.end_date)
+
     return await repository.createVacation(data)
   } catch(e){
     throw e

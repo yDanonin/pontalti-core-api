@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import vacationService from "./vacation-service";
+import scheduleService from "./schedule-service";
 import { CustomRequest } from "@pontalti/types/common.types";
 
 const routes = Router();
 
 routes.post('/', (req: CustomRequest, res: Response, next: NextFunction) => {
-  vacationService.createVacation(req.body)
+  scheduleService.createSchedule(req.body)
     .then(result => {
       res.json(result)
     })
@@ -17,7 +17,7 @@ routes.post('/', (req: CustomRequest, res: Response, next: NextFunction) => {
 })
 
 routes.get('/', (req: Request, res: Response, next: NextFunction) => {
-  vacationService.getAllVacations(req.query)
+  scheduleService.getAllSchedules(req.query)
     .then(result => {
       res.json(result)
     })
@@ -32,7 +32,7 @@ routes.get('/test', (req, res) => {
 });
 
 routes.patch('/:id', (req, res, next) => {
-  vacationService.updatePartialVacation(Number(req.params.id), req.body)
+  scheduleService.updatePartialSchedule(Number(req.params.id), req.body)
     .then(result => {
       res.json(result)
     })
@@ -43,7 +43,7 @@ routes.patch('/:id', (req, res, next) => {
 })
 
 routes.delete('/:id', (req, res, next) => {
-  vacationService.deleteVacation(Number(req.params.id))
+  scheduleService.deleteSchedule(Number(req.params.id))
     .then(result => {
       res.json(result)
     })

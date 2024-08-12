@@ -84,9 +84,18 @@ async function main() {
     employeeData.created_at = new Date();
     employeeData.updated_at = new Date();
 
-    await dbClient.employees.create({
+    const employee = await dbClient.employees.create({
       data: employeeData
     });
+
+    for (let k = 0; k <= 6; k++){
+      await dbClient.schedules.create({
+        data: {
+          employee_id: employee.id,
+          day_of_week: k
+        }
+      })
+    }
   }
 
   // registering machines
@@ -178,7 +187,7 @@ async function main() {
   for (let i = 0; i < totalRecords; i++) {
     const employee_id = employees[i % employees.length];
     
-    await dbClient.employeeWorkHours.create({
+    await dbClient.workHours.create({
       data: {
         employee_id: employee_id,
         clock_in: new Date(currentDate),
@@ -186,7 +195,7 @@ async function main() {
       }
     });
 
-    await dbClient.employeeWorkHours.create({
+    await dbClient.workHours.create({
       data: {
         employee_id: employee_id,
         clock_in: new Date(currentDate.getTime() + 4 * 60 * 60 * 1000),
@@ -197,6 +206,16 @@ async function main() {
     if ((i + 1) % 4 === 0) {
       currentDate.setDate(currentDate.getDate() - 1);
     }
+  }
+
+  // registrando tempo de entrada e saida da fábrica
+  for (let i = 0; i <= 6; i++){
+    await dbClient.timeConfiguration.create({
+      data: {
+        day_of_week: i,
+        late_limit_in_minutes: 10
+      }
+    })
   }
 };
 

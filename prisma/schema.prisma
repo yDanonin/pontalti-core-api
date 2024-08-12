@@ -7,10 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// TODO: Review address problem, if we will just create how a column or create a table with this data separing
-// the information and just throw there or apply 3FN that we will need to create more tables like a state table?
-
-// TODO: Review how access system will be.
 model Users {
   id       Int      @id @default(autoincrement())
   email    String   @unique
@@ -19,8 +15,6 @@ model Users {
   isAdmin  Boolean? @default(false)
 }
 
-//TODO: to use "viacep" api to search for a new address if we haven't it in our db
-// viacep: https://viacep.com.br
 model Adresses {
   id             Int     @id @default(autoincrement())
   zip_code       String
@@ -46,8 +40,6 @@ model Customers {
   cel_number     String
   email          String   @unique
   store_name     String
-  // review this attr bellow, because don't make sense deliver to be a customer's attr.
-  // collect/deliveries, should be a request's attr.
   deliver        Boolean
   pontalti       Boolean
   secondary_line Boolean
@@ -59,8 +51,6 @@ model Customers {
   address Adresses @relation(fields: [address_id], references: [id])
 }
 
-// TODO: employee needs address.
-// TODO: Some doubts in how classification will works and confirm if phone and cel_number will be required.
 model Employees {
   id             Int       @id @default(autoincrement())
   email          String    @unique
@@ -75,14 +65,11 @@ model Employees {
   created_at     DateTime  @default(now())
   updated_at     DateTime  @updatedAt
 
-  schedules EmployeeSchedules[]
-  workHours EmployeeWorkHours[]
+  schedules Schedules[]
+  workHours WorkHours[]
   vacations Vacations[]
 }
 
-// TODO: employee needs address.
-// TODO: Study better the "Faturamento na compra" implementation
-// TODO: Study better vendors business rules
 model Vendors {
   id               Int      @id @default(autoincrement())
   name             String
@@ -102,7 +89,6 @@ model Vendors {
   address Adresses @relation(fields: [address_id], references: [id])
 }
 
-// TODO: Study better vendors business rules
 model Products {
   id           Int      @id @default(autoincrement())
   status       Int
@@ -119,7 +105,6 @@ model Products {
   updated_at   DateTime
 }
 
-// TODO: Study better vendors business rules
 model Machines {
   id              Int      @id @default(autoincrement())
   model           String
@@ -131,7 +116,6 @@ model Machines {
   updated_at      DateTime
 }
 
-// TODO: Study better vendors business rules
 model Procedures {
   id           Int      @id @default(autoincrement())
   process_name String
@@ -141,21 +125,21 @@ model Procedures {
   updated_at   DateTime
 }
 
-model EmployeeSchedules {
+model Schedules {
   id          Int      @id @default(autoincrement())
   employee_id Int
   day_of_week Int
-  start_time  DateTime
-  end_time    DateTime
+  start_time  String   @default("09:00:00")
+  end_time    String   @default("18:00:00")
   created_at  DateTime @default(now())
-  updated_at  DateTime
+  updated_at  DateTime @updatedAt
 
   employee Employees @relation(fields: [employee_id], references: [id])
 
   @@index([employee_id, day_of_week], name: "employee_dayOfWeek_idx")
 }
 
-model EmployeeWorkHours {
+model WorkHours {
   id          Int       @id @default(autoincrement())
   employee_id Int
   clock_in    DateTime
@@ -167,11 +151,23 @@ model EmployeeWorkHours {
 }
 
 model Vacations {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   employee_id Int
-  last_vacation DateTime
-  created_at  DateTime  @default(now())
+  start_date  DateTime
+  end_date    DateTime
+  sold_days   Int
+  created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
   employee Employees @relation(fields: [employee_id], references: [id])
+}
+
+model TimeConfiguration {
+  id                    Int      @id @default(autoincrement())
+  day_of_week           Int
+  work_start            String   @default("09:00:00")
+  work_end              String   @default("18:00:00")
+  late_limit_in_minutes Int
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
 }

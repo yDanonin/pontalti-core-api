@@ -3,11 +3,13 @@ import createHttpError from "http-errors";
 import employeeService from "./employee-service";
 import { createEmployeeSchema } from "@pontalti/modules/v1/employees/employee-schema"
 import { validate } from "@pontalti/utils/validator";
+import schedules from "@pontalti/modules/v1/employees/schedules/routes";
 import work_hours from '@pontalti/modules/v1/employees/work-hours/routes'
 import vacations from '@pontalti/modules/v1/employees/vacations/routes'
 
 const routes = Router();
 
+routes.use('/schedules', schedules)
 routes.use('/work-hours', work_hours)
 routes.use('/vacations', vacations)
 

@@ -1,6 +1,6 @@
-import repository from "@pontalti/repository/employee-work-hour";
+import repository from "@pontalti/repository/work-hour";
 import employeeRepository from "@pontalti/repository/employee"
-import { EmployeeWorkHourFilters } from "@pontalti/types/employee-work-hour.types";
+import { WorkHourFilters } from "@pontalti/types/work-hour.types";
 import { User } from "@pontalti/types/user.types";
 
 const calculateHoursWorked = (registros: { clock_in: Date; clock_out: Date }[]) => {
@@ -44,7 +44,7 @@ const calculateHoursWorked = (registros: { clock_in: Date; clock_out: Date }[]) 
   return resultado;
 };
 
-const createEmployee = async (user: Omit<User, "password">, datetime?: Date) => {
+const createWorkHour = async (user: Omit<User, "password">, datetime?: Date) => {
   try {
     const time = datetime ? datetime : new Date()
     const employee = await employeeRepository.getEmployeeByEmail(user.email);
@@ -63,7 +63,7 @@ const createEmployee = async (user: Omit<User, "password">, datetime?: Date) => 
   }
 };
 
-const getWorkHours = async (filters: EmployeeWorkHourFilters) => {
+const getWorkHours = async (filters: WorkHourFilters) => {
   return calculateHoursWorked(await repository.getEmployeesWorkHours(filters));
 };
 
@@ -103,7 +103,7 @@ const deleteEmployeeWorkHour = async (id: number) => {
 };
 
 export default {
-  createEmployee,
+  createWorkHour,
   getWorkHours,
   getEmployeeWorkHourById,
   getEmployeeWorkHourByDay,

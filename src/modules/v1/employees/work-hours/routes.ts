@@ -6,9 +6,7 @@ import { CustomRequest } from "@pontalti/types/common.types";
 const routes = Router();
 
 routes.post('/', (req: CustomRequest, res: Response, next: NextFunction) => {
-  console.log("aqui")
-  console.log(req.user)
-  workHourService.createEmployee(req.user, req.body.datetime)
+  workHourService.createWorkHour(req.user, req.body.datetime)
     .then(result => {
       res.json(result)
     })

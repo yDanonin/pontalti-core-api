@@ -1,6 +1,6 @@
 import { Employee } from "./employee.types"
 
-export type Vacation = {
+export type TimeConfiguration = {
   id: number,
   employee: Employee,
   start_date: Date,
@@ -10,4 +10,3 @@ export type Vacation = {
   updated_at: Date
 }
 
-export type VacationRegister = Omit<Vacation, "id" | "created_at" | "updated_at" | "employee"> & { employee_id: number };

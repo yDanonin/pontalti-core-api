@@ -1,9 +1,19 @@
-import {Request} from "express";
+import { Request } from "express";
 import { User } from "./user.types";
 
 export enum Status {
   Suspenso,
   Operacional
+}
+
+export enum DayOfWeek {
+  Sunday,
+  Monday,
+  Tuesday,
+  Wednesday,
+  Thursday,
+  Friday,
+  Saturday
 }
 
 export type PaginationResponse<T = unknown> = {
