@@ -70,12 +70,13 @@ const getTodayEmployeeWorkHour = async (employee_id: number) => {
 };
 
 const getTodayWorkHour = async () => {
-  try{
+  try {
     const startDate = startAndEndOfDate(new Date()).startOfDay;
     return await prisma.workHours.findMany({ 
-      where: { created_at: { gte: startDate } },
-      orderBy: { created_at: 'desc' },
-      // include: { employee: true }
+      where: { clock_in: { gte: startDate } },
+      orderBy: { clock_in: 'desc' },
+      include: { employee: true },
+      distinct: ['employee_id'],
     });
   } catch(e) {
     dbErrorHandle(e)

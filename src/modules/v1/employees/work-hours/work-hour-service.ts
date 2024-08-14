@@ -90,7 +90,7 @@ const getAllWorkHoursToday = async () => {
     return acc;
   }, {});
 
-  return groupedByEmployee;
+  return workHours;
 
 }
 

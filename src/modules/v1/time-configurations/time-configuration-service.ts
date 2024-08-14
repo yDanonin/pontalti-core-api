@@ -1,9 +1,18 @@
 import { TimeConfiguration } from "@pontalti/types/time-configuration.types";
-import { CommonRequest } from "@pontalti/types/common.types";
+import { CommonRequest, DayOfWeek } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/time-configuration";
 
+const convertDayOfWeekEnumToString = (employee: TimeConfiguration) => {
+  const { day_of_week, ...othersAttributes } = employee;
+  return { ...othersAttributes, day_of_week: DayOfWeek[day_of_week] };
+}
+
+const mapPaginationResponseClassification = (data: TimeConfiguration[]) => {
+  return data.map(convertDayOfWeekEnumToString);
+}
+
 const getAllTimeConfigurations = async (filters: CommonRequest<TimeConfiguration>) => {
-  return await repository.getTimeConfigurations(filters)
+  return mapPaginationResponseClassification(await repository.getTimeConfigurations(filters))
 };
 
 const getTimeConfigurationById = async (id: number) => {

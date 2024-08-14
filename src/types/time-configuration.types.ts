@@ -1,11 +1,9 @@
-import { Employee } from "./employee.types"
-
 export type TimeConfiguration = {
   id: number,
-  employee: Employee,
-  start_date: Date,
-  end_date: Date,
-  sold_days: number,
+  day_of_week: number,
+  work_start: string,
+  work_end: string,
+  late_limit_in_minutes: number,
   created_at: Date,
   updated_at: Date
 }
