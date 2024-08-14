@@ -1,6 +1,15 @@
 import { Schedule, ScheduleRegister} from "@pontalti/types/schedule.types";
-import { CommonRequest, DefaultResponse, PaginationResponse } from "@pontalti/types/common.types";
+import { CommonRequest, DayOfWeek, DefaultResponse, PaginationResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/schedule";
+
+const convertDayOfWeekEnumToString = (employee: Schedule) => {
+  const { day_of_week, ...othersAttributes } = employee;
+  return { ...othersAttributes, day_of_week: DayOfWeek[day_of_week] };
+}
+
+const mapPaginationResponseClassification = (data: Schedule[]) => {
+  return data.map(convertDayOfWeekEnumToString);
+}
 
 const createSchedule = async (data: ScheduleRegister) => {
   try{
@@ -10,8 +19,9 @@ const createSchedule = async (data: ScheduleRegister) => {
   }
 };
 
-const getAllSchedules = async (filters: CommonRequest<Schedule>) => {
-  return await repository.getSchedules(filters)
+const getAllSchedules = async (filters: CommonRequest<ScheduleRegister>) => {
+  console.log(filters)
+  return mapPaginationResponseClassification(await repository.getSchedules(filters))
 };
 
 const getScheduleById = async (id: number) => {

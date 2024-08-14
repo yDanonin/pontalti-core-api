@@ -12,10 +12,12 @@ const getScheduleById = async (id: number) => {
   });
 };
 
-const getSchedules = async (filters: CommonRequest<Schedule>) => {
+const getSchedules = async (filters: CommonRequest<ScheduleRegister>) => {
   const { page, perPage } = filters;
+  const employee_id = Number(filters.employee_id)
   const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
   return await prisma.schedules.findMany({
+    where: { employee_id: employee_id },
     take: perPage,
     skip: skip
   });
