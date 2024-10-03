@@ -2,17 +2,6 @@ import { Classification, Employee, EmployeeClassificationString, EmployeeRegiste
 import { CommonRequest, PaginationResponse } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/employee";
 
-const convertEmployeeClassificationToString = (employee: Employee) => {
-  const { classification, ...othersAttributes } = employee;
-  return { ...othersAttributes, classification: Classification[classification] };
-}
-
-const mapPaginationResponseClassification = (paginatedEmployees: PaginationResponse<Employee>) => {
-  const { data, ...paginationInfos } = paginatedEmployees
-  const employees = data.map(convertEmployeeClassificationToString);
-  return { data: employees, ...paginationInfos } as PaginationResponse<EmployeeClassificationString>;
-}
-
 const createEmployee = async (data: EmployeeRegister) => {
   try{
     data.admission = data.admission ? new Date(data.admission) : data.admission;
@@ -24,7 +13,7 @@ const createEmployee = async (data: EmployeeRegister) => {
 };
 
 const getAllEmployees = async (filters: CommonRequest<Employee>) => {
-  return mapPaginationResponseClassification((await repository.getEmployees(filters)) as PaginationResponse<Employee>);
+  return convertPaginatedEmployeeClassificationToString((await repository.getEmployees(filters)) as PaginationResponse<Employee>);
 };
 
 const getEmployeeById = async (id: number) => {
@@ -38,6 +27,18 @@ const updatePartialEmployee = async (id: number, data: unknown) => {
 const deleteEmployee = async (id: number) => {
   return convertEmployeeClassificationToString((await repository.deleteEmployee(id)) as Employee);
 };
+
+const convertPaginatedEmployeeClassificationToString = (paginatedEmployees: PaginationResponse<Employee>) => {
+  const { data, ...paginationInfos } = paginatedEmployees
+  const employees = data.map(convertEmployeeClassificationToString);
+  return { data: employees, ...paginationInfos } as PaginationResponse<EmployeeClassificationString>;
+}
+
+const convertEmployeeClassificationToString = (employee: Employee) => {
+  const { classification, ...othersAttributes } = employee;
+  return { ...othersAttributes, classification: Classification[classification] };
+}
+
 
 export default {
   createEmployee,
