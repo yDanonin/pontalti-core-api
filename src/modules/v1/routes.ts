@@ -9,6 +9,7 @@ import vendors from '@pontalti/modules/v1/vendors/routes'
 import auth from "@pontalti/modules/v1/auth/routes";
 import users from "@pontalti/modules/v1/users/routes";
 import timeConfigurations from "@pontalti/modules/v1/time-configurations/routes";
+import orders from "@pontalti/modules/v1/orders/routes";
 
 const routes = Router();
 
@@ -25,5 +26,6 @@ routes.use('/vendors', vendors);
 routes.use('/authentication', auth);
 routes.use('/users', users);
 routes.use('/time-configurations', timeConfigurations);
+routes.use('/orders', orders);
 
 export default routes;

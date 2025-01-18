@@ -49,6 +49,8 @@ model Customers {
   updated_at     DateTime
 
   address Adresses @relation(fields: [address_id], references: [id])
+
+  Order Orders[]
 }
 
 model Employees {
@@ -87,6 +89,8 @@ model Vendors {
   updated_at       DateTime
 
   address Adresses @relation(fields: [address_id], references: [id])
+
+  materialOrders MaterialOrders[]
 }
 
 model Products {
@@ -103,6 +107,9 @@ model Products {
   equivalency  Float
   created_at   DateTime @default(now())
   updated_at   DateTime
+
+  orders         Orders[]
+  materialOrders MaterialOrders[]
 }
 
 model Machines {
@@ -170,4 +177,57 @@ model TimeConfiguration {
   late_limit_in_minutes Int
   created_at            DateTime @default(now())
   updated_at            DateTime @updatedAt
+}
+
+model Orders {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  price       Float
+  amount      Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  customer_id Int
+  product_id  Int
+
+  products  Products  @relation(fields: [product_id], references: [id])
+  customers Customers @relation(fields: [customer_id], references: [id])
+
+  payments       Payments[]
+  productReturns ProductReturns[]
+}
+
+model Payments {
+  id             Int      @id @default(autoincrement())
+  amount_paid    Float
+  payment_method String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  order_id Int
+
+  orders Orders @relation(fields: [order_id], references: [id])
+}
+
+model MaterialOrders {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  received_by String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  product_id  Int
+  vendor_id   Int
+
+  products Products @relation(fields: [product_id], references: [id])
+  vendors  Vendors  @relation(fields: [vendor_id], references: [id])
+}
+
+model ProductReturns {
+  id         Int      @id @default(autoincrement())
+  amount     Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  order_id Int
+
+  orders Orders @relation(fields: [order_id], references: [id])
 }
