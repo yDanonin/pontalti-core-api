@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import orderService from "@pontalti/modules/v1/orders/order-service";
-// import { createOrderSchema } from "@pontalti/modules/v1/orders/order-schema"
+import { createOrderSchema } from "@pontalti/modules/v1/orders/order-schema"
 import { validate } from "@pontalti/utils/validator";
 
 const routes = Router();
 
-routes.post('/', (req, res, next) => {
+routes.post('/', validate(createOrderSchema), (req, res, next) => {
   orderService.createOrder(req.body)
     .then(result => {
       res.json(result)
