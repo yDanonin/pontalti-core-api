@@ -50,7 +50,9 @@ model Customers {
 
   address Adresses @relation(fields: [address_id], references: [id])
 
-  Order Orders[]
+  //TODO: Review this nomenclature, if plural makes sense 
+  Order         Orders[]
+  ProductReturn ProductReturns[]
 }
 
 model Employees {
@@ -179,18 +181,19 @@ model TimeConfiguration {
   updated_at            DateTime @updatedAt
 }
 
+//TODO: Review 1 order could have n products.
 model Orders {
   id          Int      @id @default(autoincrement())
-  date        DateTime
-  price       Float
+  final_price Float
   amount      Int
+  date        DateTime
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
   customer_id Int
   product_id  Int
 
-  products  Products  @relation(fields: [product_id], references: [id])
-  customers Customers @relation(fields: [customer_id], references: [id])
+  product  Products  @relation(fields: [product_id], references: [id])
+  customer Customers @relation(fields: [customer_id], references: [id])
 
   payments       Payments[]
   productReturns ProductReturns[]
@@ -199,35 +202,56 @@ model Orders {
 model Payments {
   id             Int      @id @default(autoincrement())
   amount_paid    Float
+  remaining      Float
   payment_method String
+  date           DateTime
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
 
   order_id Int
 
-  orders Orders @relation(fields: [order_id], references: [id])
+  order Orders @relation(fields: [order_id], references: [id])
 }
 
 model MaterialOrders {
-  id          Int      @id @default(autoincrement())
-  date        DateTime
-  received_by String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  product_id  Int
-  vendor_id   Int
+  id               Int      @id @default(autoincrement())
+  date             DateTime
+  amount           Int
+  unit             String
+  storage_location String
+  received_by      String
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  product_id       Int
+  vendor_id        Int
 
-  products Products @relation(fields: [product_id], references: [id])
-  vendors  Vendors  @relation(fields: [vendor_id], references: [id])
+  product Products @relation(fields: [product_id], references: [id])
+  vendor  Vendors  @relation(fields: [vendor_id], references: [id])
 }
 
+//TODO: Review delivery logic
 model ProductReturns {
-  id         Int      @id @default(autoincrement())
-  amount     Int
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id                    Int      @id @default(autoincrement())
+  amount                Int
+  return_reason         String
+  replacement_necessary Boolean
+  resold                Boolean
+  date                  DateTime
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
 
-  order_id Int
+  customer_id       Int
+  order_id          Int
+  returned_label_id Int
 
-  orders Orders @relation(fields: [order_id], references: [id])
+  order          Orders        @relation(fields: [order_id], references: [id])
+  returned_label ReturnedLabel @relation(fields: [returned_label_id], references: [id])
+  customer       Customers     @relation(fields: [customer_id], references: [id])
+}
+
+model ReturnedLabel {
+  id     Int     @id @default(autoincrement())
+  opened Boolean
+
+  productsReturns ProductReturns[]
 }

@@ -2,14 +2,31 @@ import { Order, OrderRegister } from "@pontalti/types/order.types";
 import { CommonRequest } from "@pontalti/types/common.types";
 import prisma from "@pontalti/lib/prisma";
 
+// model Orders {
+//   id          Int      @id @default(autoincrement())
+//   final_price Float
+//   amount      Int
+//   date        DateTime
+//   created_at  DateTime @default(now())
+//   updated_at  DateTime @updatedAt
+//   customer_id Int
+//   product_id  Int
+
+//   products  Products  @relation(fields: [product_id], references: [id])
+//   customers Customers @relation(fields: [customer_id], references: [id])
+
+//   payments       Payments[]
+//   productReturns ProductReturns[]
+// }
+
 const defaultSelectedFieldForOrders = {
   id: true,
-  date: true,
-  price: true,
+  final_price: true,
   amount: true,
+  date: true,
   created_at: true,
   updated_at: true,
-  customers: {
+  customer: {
     select: {
       id: true,
       status: true,
@@ -42,7 +59,7 @@ const defaultSelectedFieldForOrders = {
       }
     }
   },
-  products: {
+  product: {
     select: {
       id: true,
       status: true,
@@ -65,7 +82,7 @@ const createOrder = async (data: OrderRegister): Promise<Order> => {
   return await prisma.orders.create({ data: {
     amount: data.amount,
     date: data.date,
-    price: data.price,
+    final_price: data.final_price,
     customer_id: data.customer_id,
     product_id: data.product_id
   }, select: defaultSelectedFieldForOrders });
