@@ -1,7 +1,7 @@
 import { Product } from "./product.types";
 import { Vendor } from "./vendor.types";
 
-export type MaterialOrders = {
+export type MaterialOrder = {
   id: number;
   amount: number;
   unit: string;
@@ -14,9 +14,9 @@ export type MaterialOrders = {
   vendor: Vendor;
 };
 
-export type MaterialOrdersRegister = Omit<MaterialOrders, "id" | "created_at" | "updated_at" | "product" | "vendor"> & {
+export type MaterialOrderRegister = Omit<MaterialOrder, "id" | "created_at" | "updated_at" | "product" | "vendor"> & {
   product_id: number;
   vendor_id: number;
 };
 
-export type UpdatePartialMaterialOrders = Partial<MaterialOrders>;
+export type UpdatePartialMaterialOrder = Partial<MaterialOrder>;

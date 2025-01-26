@@ -1,4 +1,4 @@
 export type ReturnedLabel = {
-  id: number;
+  ticket_code: string;
   opened: boolean;
 };

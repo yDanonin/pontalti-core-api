@@ -10,6 +10,9 @@ import auth from "@pontalti/modules/v1/auth/routes";
 import users from "@pontalti/modules/v1/users/routes";
 import timeConfigurations from "@pontalti/modules/v1/time-configurations/routes";
 import orders from "@pontalti/modules/v1/orders/routes";
+import payments from "@pontalti/modules/v1/payments/routes";
+import materialOrders from "@pontalti/modules/v1/material-orders/routes";
+import productReturns from "@pontalti/modules/v1/product-returns/routes";
 
 const routes = Router();
 
@@ -27,5 +30,8 @@ routes.use('/authentication', auth);
 routes.use('/users', users);
 routes.use('/time-configurations', timeConfigurations);
 routes.use('/orders', orders);
+routes.use('/payments', payments);
+routes.use('/material-orders', materialOrders);
+routes.use('/product-returns', productReturns);
 
 export default routes;

@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import orderService from "@pontalti/modules/v1/orders/order-service";
-import { createOrderSchema } from "@pontalti/modules/v1/orders/order-schema"
+import paymentService from "@pontalti/modules/v1/payments/payment-service";
+import { createPaymentSchema } from "@pontalti/modules/v1/payments/payment-schema"
 import { validate } from "@pontalti/utils/validator";
 
 const routes = Router();
 
-routes.post('/', validate(createOrderSchema), (req, res, next) => {
-  console.log("esta na rota")
-  orderService.createOrder(req.body.order, req.body.products)
+routes.post('/', (req, res, next) => {
+  paymentService.createPayment(req.body)
     .then(result => {
       res.json(result)
     })
@@ -19,7 +18,7 @@ routes.post('/', validate(createOrderSchema), (req, res, next) => {
 })
 
 routes.get('/', (req, res, next) => {
-  orderService.getAllOrders(req.params)
+  paymentService.getAllPayments(req.params)
     .then(result => {
       res.json(result)
     })
@@ -31,7 +30,7 @@ routes.get('/', (req, res, next) => {
 
 routes.get('/:id', (req, res, next) => {
   const id = req.params.id;
-  orderService.getOrderById(Number(id))
+  paymentService.getPaymentById(Number(id))
     .then(result => {
       res.json(result)
     })
@@ -42,7 +41,7 @@ routes.get('/:id', (req, res, next) => {
 })
 
 routes.patch('/:id', (req, res, next) => {
-  orderService.updatePartialOrder(Number(req.params.id), req.body)
+  paymentService.updatePartialPayment(Number(req.params.id), req.body)
     .then(result => {
       res.json(result)
     })
@@ -53,7 +52,7 @@ routes.patch('/:id', (req, res, next) => {
 })
 
 routes.delete('/:id', (req, res, next) => {
-  orderService.deleteOrder(Number(req.params.id))
+  paymentService.deletePayment(Number(req.params.id))
     .then(result => {
       res.json(result)
     })
