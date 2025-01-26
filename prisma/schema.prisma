@@ -51,8 +51,7 @@ model Customers {
   address Adresses @relation(fields: [address_id], references: [id])
 
   //TODO: Review this nomenclature, if plural makes sense 
-  Order         Orders[]
-  ProductReturn ProductReturns[]
+  Order Orders[]
 }
 
 model Employees {
@@ -110,8 +109,8 @@ model Products {
   created_at   DateTime @default(now())
   updated_at   DateTime
 
-  orders         Orders[]
   materialOrders MaterialOrders[]
+  orders         OrderItems[]
 }
 
 model Machines {
@@ -185,18 +184,29 @@ model TimeConfiguration {
 model Orders {
   id          Int      @id @default(autoincrement())
   final_price Float
-  amount      Int
   date        DateTime
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
   customer_id Int
-  product_id  Int
 
-  product  Products  @relation(fields: [product_id], references: [id])
   customer Customers @relation(fields: [customer_id], references: [id])
 
   payments       Payments[]
   productReturns ProductReturns[]
+  products       OrderItems[]
+}
+
+model OrderItems {
+  order_id   Int
+  product_id Int
+  quantity   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  order   Orders   @relation(fields: [order_id], references: [id])
+  product Products @relation(fields: [product_id], references: [id])
+
+  @@id([order_id, product_id])
 }
 
 model Payments {
@@ -240,18 +250,19 @@ model ProductReturns {
   created_at            DateTime @default(now())
   updated_at            DateTime @updatedAt
 
-  customer_id       Int
-  order_id          Int
-  returned_label_id Int
+  order_id Int
 
-  order          Orders        @relation(fields: [order_id], references: [id])
-  returned_label ReturnedLabel @relation(fields: [returned_label_id], references: [id])
-  customer       Customers     @relation(fields: [customer_id], references: [id])
+  order Orders @relation(fields: [order_id], references: [id])
+
+  returnedLabels ReturnedLabels[]
 }
 
-model ReturnedLabel {
-  id     Int     @id @default(autoincrement())
-  opened Boolean
+model ReturnedLabels {
+  id          Int     @id @default(autoincrement())
+  ticket_code String  @unique
+  opened      Boolean
 
-  productsReturns ProductReturns[]
+  product_return_id Int
+
+  product_return ProductReturns @relation(fields: [product_return_id], references: [id])
 }

@@ -11,15 +11,11 @@ export type ProductReturn = {
   date: Date;
   created_at: Date;
   updated_at: Date;
-  customer: Customer;
   order: Order;
-  ReturnedLabel: ReturnedLabel;
 };
 
-export type ProductReturnRegister = Omit<ProductReturn, "id" | "created_at" | "updated_at" | "customer" | "order" | "ReturnedLabel"> & {
-  customer_id: number;
+export type ProductReturnRegister = Omit<ProductReturn, "id" | "created_at" | "updated_at" | "customer" | "order" > & {
   order_id: number;
-  returned_label_id: number;
 };
 
 export type UpdatePartialProductReturn = Partial<ProductReturn>;

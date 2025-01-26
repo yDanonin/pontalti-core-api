@@ -1,28 +1,11 @@
 import { Order, OrderRegister } from "@pontalti/types/order.types";
 import { CommonRequest } from "@pontalti/types/common.types";
 import prisma from "@pontalti/lib/prisma";
+import { OrderItemRegister, ProductIdAndQuantity } from "@pontalti/types/order-item.types";
 
-// model Orders {
-//   id          Int      @id @default(autoincrement())
-//   final_price Float
-//   amount      Int
-//   date        DateTime
-//   created_at  DateTime @default(now())
-//   updated_at  DateTime @updatedAt
-//   customer_id Int
-//   product_id  Int
-
-//   products  Products  @relation(fields: [product_id], references: [id])
-//   customers Customers @relation(fields: [customer_id], references: [id])
-
-//   payments       Payments[]
-//   productReturns ProductReturns[]
-// }
-
-const defaultSelectedFieldForOrders = {
+export const defaultSelectedFieldForOrders = {
   id: true,
   final_price: true,
-  amount: true,
   date: true,
   created_at: true,
   updated_at: true,
@@ -59,33 +42,42 @@ const defaultSelectedFieldForOrders = {
       }
     }
   },
-  product: {
-    select: {
-      id: true,
-      status: true,
-      volume_sales: true,
-      sales: true,
-      invoicing: true,
-      name: true,
-      model: true,
-      size: true,
-      character: true,
-      moldes: true,
-      equivalency: true,
-      created_at: true,
-      updated_at: true
-    }
-  }
 };
 
-const createOrder = async (data: OrderRegister): Promise<Order> => {
-  return await prisma.orders.create({ data: {
-    amount: data.amount,
-    date: data.date,
-    final_price: data.final_price,
-    customer_id: data.customer_id,
-    product_id: data.product_id
-  }, select: defaultSelectedFieldForOrders });
+const createOrder = async (orderDetails: OrderRegister, products: ProductIdAndQuantity[]) => {
+  try {
+    const result = await prisma.$transaction(async (transaction) => {
+      const registeredOrder = await transaction.orders.create({
+        data: {
+          final_price: orderDetails.final_price,
+          date: orderDetails.date,
+          customer_id: orderDetails.customer_id
+        }
+      });
+
+      const productEntries = await Promise.all(
+        products.map(async product => {
+          return transaction.orderItems.create({
+            data: {
+              order_id: registeredOrder.id,
+              product_id: product.id,
+              quantity: product.quantity
+            }
+          });
+        })
+      );
+
+      return {
+        order: registeredOrder,
+        products: productEntries
+      };
+    });
+
+    return result;
+  } catch (error) {
+    console.error("Failed to create order and order items:", error);
+    throw error;
+  }
 };
 
 const getOrder = async (id: number) => {
@@ -102,26 +94,49 @@ const getOrders = async (filters: CommonRequest<Order>) => {
   });
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const updatePartialOrder = async (id: number, data: any): Promise<Order> => {
-  const existingOrder = await prisma.orders.findUnique({
-    where: { id }
-  });
+const updatePartialOrder = async (orderId: number, data: any): Promise<any> => {
+  try {
+    const result = await prisma.$transaction(async (transaction) => {
+      let updatedOrder;
+      let updatedItems = [];
 
-  if (!existingOrder) {
-    throw new Error("Order not found");
+      if (data.order) {
+        updatedOrder = await transaction.orders.update({
+          where: { id: orderId },
+          data: data.order,
+          select: defaultSelectedFieldForOrders
+        });
+      }
+
+      if (data.items && data.items.length > 0) {
+        updatedItems = await Promise.all(
+          data.items.map(item => {
+            if(item.product_id){
+              return transaction.orderItems.updateMany({
+                where: {
+                  order_id: orderId,
+                  product_id: item.product_id
+                },
+                data: {
+                  quantity: item.quantity
+                }
+              });
+            }
+          })
+        );
+      }
+
+      return {
+        order: updatedOrder,
+        orderItems: updatedItems
+      };
+    });
+
+    return result;
+  } catch (error) {
+    console.error("Failed to update order and/or order items:", error);
+    throw error;
   }
-
-  const updatedOrder = await prisma.orders.update({
-    where: { id },
-    data: {
-      ...existingOrder,
-      ...data
-    },
-    select: defaultSelectedFieldForOrders
-  });
-
-  return updatedOrder;
 };
 
 const deleteOrder = async (id: number) => {
