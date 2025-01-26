@@ -11,7 +11,12 @@ export type Payment = {
   order: Order;
 };
 
+
 export type PaymentRegister = Omit<Payment, "id" | "created_at" | "updated_at" | "order" > & {
+  order_id: number;
+};
+
+export type PaymentRequest = Omit<Payment, "id" | "created_at" | "updated_at" | "order" | "remaining"> & {
   order_id: number;
 };
 

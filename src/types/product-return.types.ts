@@ -4,7 +4,6 @@ import { ReturnedLabel } from "./returned_label.types";
 
 export type ProductReturn = {
   id: number;
-  amount: number;
   return_reason: string;
   replacement_necessary: boolean;
   resold: boolean
