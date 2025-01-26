@@ -242,7 +242,6 @@ model MaterialOrders {
 //TODO: Review delivery logic
 model ProductReturns {
   id                    Int      @id @default(autoincrement())
-  amount                Int
   return_reason         String
   replacement_necessary Boolean
   resold                Boolean
@@ -261,6 +260,7 @@ model ReturnedLabels {
   id          Int     @id @default(autoincrement())
   ticket_code String  @unique
   opened      Boolean
+  quantity    Int
 
   product_return_id Int
 

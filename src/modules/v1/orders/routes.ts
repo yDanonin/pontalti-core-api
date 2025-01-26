@@ -7,7 +7,6 @@ import { validate } from "@pontalti/utils/validator";
 const routes = Router();
 
 routes.post('/', validate(createOrderSchema), (req, res, next) => {
-  console.log("esta na rota")
   orderService.createOrder(req.body.order, req.body.products)
     .then(result => {
       res.json(result)

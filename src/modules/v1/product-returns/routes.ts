@@ -1,13 +1,11 @@
 import { Router } from "express";
 import createHttpError from "http-errors";
 import productReturnService from "@pontalti/modules/v1/product-returns/product-return-service";
-import { createMaterialOrderSchema } from "@pontalti/modules/v1/material-orders/material-order-schema"
-import { validate } from "@pontalti/utils/validator";
 
 const routes = Router();
 
-routes.post('/', validate(createMaterialOrderSchema), (req, res, next) => {
-  productReturnService.createProductReturn(req.body, [])
+routes.post('/', (req, res, next) => {
+  productReturnService.createProductReturn(req.body.product_return, req.body.returned_labels)
     .then(result => {
       res.json(result)
     })

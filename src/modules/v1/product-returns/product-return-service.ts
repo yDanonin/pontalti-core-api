@@ -1,10 +1,10 @@
 import { ProductReturn, ProductReturnRegister } from "@pontalti/types/product-return.types";
 import { CommonRequest } from "@pontalti/types/common.types";
 import repository from "@pontalti/repository/product-return";
-import { ReturnedLabel } from "@pontalti/types/returned_label.types";
+import { ReturnedLabel, ReturnedLabelRegister } from "@pontalti/types/returned_label.types";
 
-const createProductReturn = async (data: ProductReturnRegister, returned_labels: ReturnedLabel[]) => {
-  return await repository.createProductReturn(data, returned_labels);
+const createProductReturn = async (product_return: ProductReturnRegister, returned_labels: ReturnedLabelRegister[]) => {
+  return await repository.createProductReturn(product_return, returned_labels);
 };
 
 const getAllProductReturns = async (filters: CommonRequest) => {

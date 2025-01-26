@@ -28,6 +28,10 @@ const getPayment = async (id: number) => {
   return await prisma.payments.findUnique({ where: { id }, select: defaultSelectedFieldForPayment });
 };
 
+const getPaymentByOrderId = async (order_id: number) => {
+  return await prisma.payments.findMany({ where: { order_id }, select: defaultSelectedFieldForPayment });
+}
+
 const getPayments = async (filters: CommonRequest<Payment>) => {
   const { page, perPage } = filters;
   const skip = page !== 1 && page != undefined ? (page - 1) * perPage : undefined;
@@ -67,6 +71,7 @@ const deletePayment = async (id: number) => {
 export default {
   createPayment,
   getPayment,
+  getPaymentByOrderId,
   getPayments,
   updatePartialPayment,
   deletePayment
