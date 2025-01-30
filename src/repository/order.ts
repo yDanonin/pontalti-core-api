@@ -50,7 +50,7 @@ const createOrder = async (orderDetails: OrderRegister, products: ProductIdAndQu
       const registeredOrder = await transaction.orders.create({
         data: {
           final_price: orderDetails.final_price,
-          date: orderDetails.date,
+          date: new Date(orderDetails.date),
           customer_id: orderDetails.customer_id
         }
       });

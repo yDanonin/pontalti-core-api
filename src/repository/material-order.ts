@@ -49,9 +49,10 @@ const defaultSelectedFieldForMaterialOrder = {
 };
 
 const createMaterialOrder = async (data: MaterialOrderRegister): Promise<MaterialOrder> => {
+  console.log(data)
   return await prisma.materialOrders.create({ data: {
     amount: data.amount,
-    date: data.date,
+    date: new Date(data.date),
     received_by: data.received_by,
     storage_location: data.storage_location,
     unit: data.unit,

@@ -21,7 +21,7 @@ const createProductReturn = async (product_return: ProductReturnRegister, return
   try {
     const result = await prisma.$transaction(async (transaction) => {
       const registeredProductReturns = await prisma.productReturns.create({ data: {
-        date: product_return.date,
+        date: new Date(product_return.date),
         replacement_necessary: product_return.replacement_necessary,
         resold: product_return.resold,
         return_reason: product_return.return_reason,

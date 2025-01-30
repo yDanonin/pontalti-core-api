@@ -1,5 +1,6 @@
 import { User } from "@pontalti/types/user.types";
 import repository from "@pontalti/repository/user";
+import bcrypt from 'bcrypt'
 
 const removePassword = (u: User | User[]) => {
   if(!u) return u
@@ -33,7 +34,31 @@ const getUserByEmail = async (email: string) => {
   }
 }
 
+const updatePartialUser = async (id: number, data: Partial<User>) => {
+  try {
+    if (data.password) {
+      const passwordHash = await bcrypt.hash(data.password, 10);
+      data.password = passwordHash;
+    }
+    const userResponse = await repository.updatePartialUser(id, data)
+    return removePassword(userResponse)
+  } catch(e) {
+    throw e
+  }
+}
+
+const deleteUser = async (id: number) => {
+  try {
+    const userResponse = await repository.deleteUser(id)
+    return removePassword(userResponse)
+  } catch(e) {
+    throw e
+  }
+}
+
 export default {
   getAllUsers,
-  getUserByEmail
+  getUserByEmail,
+  updatePartialUser,
+  deleteUser
 }

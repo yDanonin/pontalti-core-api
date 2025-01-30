@@ -37,9 +37,41 @@ const updateUser = async (id: number, data: User) => {
   }
 }
 
+const updatePartialUser = async (id: number, data: Partial<User>): Promise<User> => {
+  try {
+    const existingUser = await prisma.users.findUnique({
+      where: { id }
+    });
+
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
+    return await prisma.users.update({
+      where: { id },
+      data: {
+        ...existingUser,
+        ...data
+      }
+    });
+  } catch(e) {
+    dbErrorHandle(e)
+  }
+}
+
+const deleteUser = async (id: number): Promise<User> => {
+  try {
+    return await prisma.users.delete({ where: { id } });
+  } catch(e) {
+    dbErrorHandle(e)
+  }
+}
+
 export default {
   registerUser,
   getAllUsers,
   getUserByEmail,
-  updateUser
+  updateUser,
+  updatePartialUser,
+  deleteUser
 }
