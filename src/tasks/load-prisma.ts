@@ -16,8 +16,8 @@ async function main() {
   }
     
   for (let i = 0; i <= 5; i++){
-    user.email = `${i}admin@gmail.com`
-    user.name = `Admin ${i}`
+    user.email = `${i}user@gmail.com`
+    user.name = `user ${i}`
     user.isAdmin = Boolean(Math.floor(Math.random() * 2))
     await dbClient.users.create({ data: user })
   };

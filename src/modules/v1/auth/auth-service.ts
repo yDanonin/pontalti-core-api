@@ -59,7 +59,7 @@ const changePassword = async (newPassword: string, token: string) => {
 }
 
 export default {
-    register,
-    login,
-    changePassword
+  register,
+  login,
+  changePassword
 };

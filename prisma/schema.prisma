@@ -13,6 +13,8 @@ model Users {
   password String
   name     String
   isAdmin  Boolean? @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Adresses {
@@ -50,8 +52,10 @@ model Customers {
 
   address Adresses @relation(fields: [address_id], references: [id])
 
-  //TODO: Review this nomenclature, if plural makes sense 
   Order Orders[]
+  prices Prices[]
+
+  messageConfig CustomerMessageConfig[]
 }
 
 model Employees {
@@ -111,6 +115,7 @@ model Products {
 
   materialOrders MaterialOrders[]
   orders         OrderItems[]
+  prices         Prices[]
 }
 
 model Machines {
@@ -194,6 +199,7 @@ model Orders {
   payments       Payments[]
   productReturns ProductReturns[]
   products       OrderItems[]
+  invoice        Invoice?
 }
 
 model OrderItems {
@@ -266,3 +272,122 @@ model ReturnedLabels {
 
   product_return ProductReturns @relation(fields: [product_return_id], references: [id])
 }
+
+model Prices {
+  id                    Int      @id @default(autoincrement())
+  product_id           Int
+  customer_id          Int?     // Pode ser null para preços padrão
+  production_cost      Float    // Custo de produção
+  operational_margin   Float    // Margem operacional
+  final_price         Float    // Preço final
+  second_line_price   Float?   // Preço segunda linha
+  frozen_until        DateTime? // Data até quando o preço está congelado
+  status              String   // ex: "amarelo", "verde", etc
+  last_update         DateTime @updatedAt
+  created_at          DateTime @default(now())
+
+  product   Products  @relation(fields: [product_id], references: [id])
+  customer  Customers? @relation(fields: [customer_id], references: [id])
+
+  @@unique([product_id, customer_id])
+}
+
+enum MessageTriggerType {
+  SCHEDULED
+  EVENT
+  MANUAL
+}
+
+enum MessageTargetTable {
+  CUSTOMER
+  ORDER
+  PAYMENT
+  DELIVERY
+}
+
+model CustomerMessageConfig {
+  id                           Int       @id @default(autoincrement())
+  customer_id                  Int
+  can_whatsapp                 Boolean   @default(false)
+  can_whatsapp_attachments     Boolean   @default(false)
+  can_telegram                 Boolean   @default(false)
+  can_telegram_attachments     Boolean   @default(false)
+  can_email                    Boolean   @default(false)
+  can_email_attachments        Boolean   @default(false)
+  created_at                   DateTime  @default(now())
+  updated_at                   DateTime  @updatedAt
+
+  // Relacionamento com a tabela de clientes
+  customer                     Customers @relation(fields: [customer_id], references: [id])
+
+  // Relacionamento com a tabela de horários/dias
+  schedules                    CustomerMessageSchedule[]
+}
+
+model CustomerMessageSchedule {
+  id                   Int         @id @default(autoincrement())
+  message_config_id    Int
+  day_of_week          Int        // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
+  can_send             Boolean     @default(false)
+  start_time           String?     // Formato "HH:mm"
+  end_time             String?     // Formato "HH:mm"
+  created_at           DateTime    @default(now())
+  updated_at           DateTime    @updatedAt
+
+  // Relacionamento com a configuração de mensagens
+  message_config       CustomerMessageConfig @relation(fields: [message_config_id], references: [id])
+}
+
+model MessageConfig {
+  id            String            @id @default(uuid())
+  customer_id   String
+  can_whatsapp  Boolean          @default(false)
+  can_email     Boolean          @default(false)
+  can_sms       Boolean          @default(false)
+  trigger_type  MessageTriggerType
+  target_table  MessageTargetTable
+  is_active     Boolean          @default(true)
+  created_at    DateTime         @default(now())
+  updated_at    DateTime         @updatedAt
+  schedules     MessageSchedule[]
+}
+
+model MessageSchedule {
+  id          String        @id @default(uuid())
+  config_id   String
+  config      MessageConfig @relation(fields: [config_id], references: [id])
+  cron        String
+  timezone    String
+  is_active   Boolean       @default(true)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+
+  @@index([config_id])
+}
+
+model MessageTemplate {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  subject     String?
+  content     String
+  variables   Json?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+}
+
+model Invoice {
+  id         Int      @id @default(autoincrement())
+  order_id   Int      @unique
+  order      Orders   @relation(fields: [order_id], references: [id])
+  number     String   // número da nota fiscal
+  status     String   // status da nota (emitida, recebida, pendente, etc)
+  type       String   // tipo da nota (avulsa, registro pendente, etc)
+  issue_date DateTime // data de emissão
+  recipient  String?  // destinatário (opcional, para histórico)
+  note       String?  // observações ou campo livre
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+
