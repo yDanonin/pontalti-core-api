@@ -17,7 +17,7 @@ const defaultSelectedFieldForPayment = {
 const createPayment = async (data: PaymentRegister): Promise<Payment> => {
   return await prisma.payments.create({ data: {
     amount_paid: data.amount_paid,
-    date: data.date,
+    date: new Date(data.date),
     payment_method: data.payment_method,
     remaining: data.remaining,
     order_id: data.order_id
