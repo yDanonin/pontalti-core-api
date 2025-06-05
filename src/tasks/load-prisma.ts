@@ -422,6 +422,49 @@ async function main() {
       }
     });
   }
+
+  // Criando embalagens
+  const packagingTypes = [
+    { name: "Caixa Pequena", quantity: 100, storage_location: "Estoque A" },
+    { name: "Caixa Média", quantity: 75, storage_location: "Estoque A" },
+    { name: "Caixa Grande", quantity: 50, storage_location: "Estoque B" },
+    { name: "Saco Plástico", quantity: 200, storage_location: "Estoque C" },
+    { name: "Fita Adesiva", quantity: 150, storage_location: "Estoque D" },
+    { name: "Papel de Embalagem", quantity: 80, storage_location: "Estoque D" }
+  ];
+
+  const createdPackagings = [];
+  for (const packaging of packagingTypes) {
+    const createdPackaging = await dbClient.packaging.create({
+      data: {
+        ...packaging,
+        created_at: new Date(),
+        updated_at: new Date()
+      }
+    });
+    createdPackagings.push(createdPackaging);
+  }
+
+  // Criando relações entre clientes e embalagens
+  for (const customer of customers) {
+    // Cada cliente terá entre 2 e 4 tipos de embalagem
+    const numPackagings = Math.floor(Math.random() * 3) + 2;
+    const selectedPackagings = [...createdPackagings]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, numPackagings);
+
+    for (const packaging of selectedPackagings) {
+      await dbClient.customerPackaging.create({
+        data: {
+          customer_id: customer.id,
+          packaging_id: packaging.id,
+          pontalti_brand: Math.random() > 0.5, // 50% de chance de ser marca Pontalti
+          created_at: new Date(),
+          updated_at: new Date()
+        }
+      });
+    }
+  }
 }
 
 main()
