@@ -14,8 +14,11 @@ import payments from "@pontalti/modules/v1/payments/routes";
 import materialOrders from "@pontalti/modules/v1/material-orders/routes";
 import productReturns from "@pontalti/modules/v1/product-returns/routes";
 import prices from "@pontalti/modules/v1/prices/routes";
-import messages from "@pontalti/modules/v1/messages/message-routes";
+import messages from "@pontalti/modules/v1/messages/routes";
 import invoices from "@pontalti/modules/v1/invoices/routes";
+import packaging from "@pontalti/modules/v1/packaging/routes";
+import customerPackaging from "@pontalti/modules/v1/customer-packaging/routes";
+
 const routes = Router();
 
 routes.get('/test', (req, res) => {
@@ -38,5 +41,7 @@ routes.use('/payments', payments);
 routes.use('/material-orders', materialOrders);
 routes.use('/product-returns', productReturns);
 routes.use('/invoices', invoices);
+routes.use('/packaging', packaging);
+routes.use('/customer-packaging', customerPackaging);
 
 export default routes;
