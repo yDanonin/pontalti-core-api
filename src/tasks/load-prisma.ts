@@ -287,71 +287,98 @@ async function main() {
     });
   }
 
-  // Criando pedidos e itens
+  // Criando pacotes (packagings)
+  const packagingTypes = [
+    { name: "Caixa Padrão", quantity: 100, storage_location: "Depósito A" },
+    { name: "Caixa Grande", quantity: 50, storage_location: "Depósito B" },
+    { name: "Caixa Pequena", quantity: 200, storage_location: "Depósito A" },
+    { name: "Saco Plástico", quantity: 500, storage_location: "Depósito C" }
+  ];
+
+  const createdPackagings = [];
+  for (const packaging of packagingTypes) {
+    const createdPackaging = await dbClient.packaging.create({
+      data: {
+        ...packaging,
+        created_at: new Date(),
+        updated_at: new Date()
+      }
+    });
+    createdPackagings.push(createdPackaging);
+  }
+
+  // Criando pedidos e entregas
   const customers = await dbClient.customers.findMany();
   const products = await dbClient.products.findMany();
 
-  for (let i = 1; i <= 20; i++) {
+  for (let i = 1; i <= 5; i++) {
     const customer = getRandomElement(customers);
-    const orderDate = getRandomDate(new Date(2024, 0, 1), new Date());
-    
     const order = await dbClient.orders.create({
       data: {
-        final_price: 0, // Será atualizado após adicionar os itens
-        date: orderDate,
-        created_at: orderDate,
-        updated_at: orderDate,
-        customer_id: customer.id
+        final_price: getRandomNumber(1000, 5000),
+        date: getRandomDate(new Date(2024, 0, 1), new Date()),
+        customer_id: customer.id,
+        created_at: new Date(),
+        updated_at: new Date()
       }
     });
 
-    // Adicionando itens ao pedido
-    const numItems = Math.floor(Math.random() * 5) + 1;
-    let totalPrice = 0;
+    // Adicionando produtos ao pedido
+    const numProducts = Math.floor(Math.random() * 3) + 1;
+    const usedProducts = new Set(); // Para evitar produtos duplicados no mesmo pedido
     
-    // Criar uma cópia do array de produtos para não modificar o original
-    const availableProducts = [...products];
-    
-    for (let j = 0; j < numItems && availableProducts.length > 0; j++) {
-      // Selecionar um produto aleatório dos disponíveis
-      const randomIndex = Math.floor(Math.random() * availableProducts.length);
-      const product = availableProducts[randomIndex];
-      const quantity = Math.floor(Math.random() * 10) + 1;
+    for (let j = 0; j < numProducts; j++) {
+      // Filtrar produtos que ainda não foram usados neste pedido
+      const availableProducts = products.filter(p => !usedProducts.has(p.id));
+      if (availableProducts.length === 0) break; // Se não houver mais produtos disponíveis, para o loop
+      
+      const product = getRandomElement(availableProducts);
+      usedProducts.add(product.id); // Marca o produto como usado
       
       await dbClient.orderItems.create({
         data: {
           order_id: order.id,
           product_id: product.id,
-          quantity: quantity,
-          created_at: orderDate,
-          updated_at: orderDate
+          quantity: Math.floor(Math.random() * 5) + 1,
+          created_at: new Date(),
+          updated_at: new Date()
         }
       });
-
-      // Remover o produto usado da lista de disponíveis
-      availableProducts.splice(randomIndex, 1);
-      
-      totalPrice += product.invoicing * quantity;
     }
 
-    // Atualizando o preço final do pedido
-    await dbClient.orders.update({
-      where: { id: order.id },
-      data: { final_price: totalPrice }
-    });
-
-    // Criando pagamento para o pedido
-    await dbClient.payments.create({
+    // Criando entrega para o pedido
+    const delivery = await dbClient.delivery.create({
       data: {
-        amount_paid: totalPrice * 0.5,
-        remaining: totalPrice * 0.5,
-        payment_method: getRandomElement(["PIX", "Cartão", "Boleto"]),
-        date: orderDate,
-        created_at: orderDate,
-        updated_at: orderDate,
-        order_id: order.id
+        order_id: order.id,
+        status: Math.floor(Math.random() * 3) + 1, // 1: Em planejamento, 2: Em rota, 3: Entregue
+        delivery_date: getRandomDate(new Date(), new Date(2024, 11, 31)),
+        created_at: new Date(),
+        updated_at: new Date()
       }
     });
+
+    // Adicionando pacotes à entrega
+    const numPackagings = Math.floor(Math.random() * 3) + 1;
+    const usedPackagings = new Set(); // Para evitar pacotes duplicados na mesma entrega
+    
+    for (let j = 0; j < numPackagings; j++) {
+      // Filtrar pacotes que ainda não foram usados nesta entrega
+      const availablePackagings = createdPackagings.filter(p => !usedPackagings.has(p.id));
+      if (availablePackagings.length === 0) break; // Se não houver mais pacotes disponíveis, para o loop
+      
+      const packaging = getRandomElement(availablePackagings);
+      usedPackagings.add(packaging.id); // Marca o pacote como usado
+      
+      await dbClient.deliveryPackaging.create({
+        data: {
+          delivery_id: delivery.id,
+          packaging_id: packaging.id,
+          quantity: Math.floor(Math.random() * 5) + 1,
+          created_at: new Date(),
+          updated_at: new Date()
+        }
+      });
+    }
   }
 
   // Criando configurações de mensagem para clientes
@@ -421,28 +448,6 @@ async function main() {
         updated_at: new Date()
       }
     });
-  }
-
-  // Criando embalagens
-  const packagingTypes = [
-    { name: "Caixa Pequena", quantity: 100, storage_location: "Estoque A" },
-    { name: "Caixa Média", quantity: 75, storage_location: "Estoque A" },
-    { name: "Caixa Grande", quantity: 50, storage_location: "Estoque B" },
-    { name: "Saco Plástico", quantity: 200, storage_location: "Estoque C" },
-    { name: "Fita Adesiva", quantity: 150, storage_location: "Estoque D" },
-    { name: "Papel de Embalagem", quantity: 80, storage_location: "Estoque D" }
-  ];
-
-  const createdPackagings = [];
-  for (const packaging of packagingTypes) {
-    const createdPackaging = await dbClient.packaging.create({
-      data: {
-        ...packaging,
-        created_at: new Date(),
-        updated_at: new Date()
-      }
-    });
-    createdPackagings.push(createdPackaging);
   }
 
   // Criando relações entre clientes e embalagens

@@ -18,6 +18,7 @@ import messages from "@pontalti/modules/v1/messages/routes";
 import invoices from "@pontalti/modules/v1/invoices/routes";
 import packaging from "@pontalti/modules/v1/packaging/routes";
 import customerPackaging from "@pontalti/modules/v1/customer-packaging/routes";
+import delivery from "@pontalti/modules/v1/delivery/routes";
 
 const routes = Router();
 
@@ -43,5 +44,6 @@ routes.use('/product-returns', productReturns);
 routes.use('/invoices', invoices);
 routes.use('/packaging', packaging);
 routes.use('/customer-packaging', customerPackaging);
+routes.use('/delivery', delivery);
 
 export default routes;
