@@ -201,6 +201,7 @@ model Orders {
   productReturns ProductReturns[]
   products       OrderItems[]
   invoice        Invoice?
+  deliveries     Delivery[]
 }
 
 model OrderItems {
@@ -400,6 +401,7 @@ model Packaging {
   updated_at       DateTime @updatedAt
 
   customers CustomerPackaging[]
+  deliveries DeliveryPackaging[]
 }
 
 model CustomerPackaging {
@@ -414,4 +416,30 @@ model CustomerPackaging {
   packaging Packaging @relation(fields: [packaging_id], references: [id])
 
   @@unique([customer_id, packaging_id])
+}
+
+model Delivery {
+  id          Int      @id @default(autoincrement())
+  order_id    Int
+  status      Int      // 1: Em planejamento, 2: Em rota, 3: Entregue
+  delivery_date DateTime
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  order      Orders    @relation(fields: [order_id], references: [id])
+  packagings DeliveryPackaging[]
+}
+
+model DeliveryPackaging {
+  id           Int      @id @default(autoincrement())
+  delivery_id  Int
+  packaging_id Int
+  quantity     Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  delivery   Delivery  @relation(fields: [delivery_id], references: [id])
+  packaging  Packaging @relation(fields: [packaging_id], references: [id])
+
+  @@unique([delivery_id, packaging_id])
 }
