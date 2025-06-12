@@ -23,7 +23,15 @@ const createDelivery = async (data: DeliveryRegister) => {
           packaging: true,
         },
       },
-      order: true,
+      order: {
+        include: {
+          customer: {
+            include: {
+              address: true
+            }
+          }
+        }
+      },
     },
   });
 
@@ -39,7 +47,15 @@ const getDelivery = async (id: number) => {
           packaging: true,
         },
       },
-      order: true,
+      order: {
+        include: {
+          customer: {
+            include: {
+              address: true
+            }
+          }
+        }
+      },
     },
   });
 
@@ -54,7 +70,15 @@ const getAllDeliveries = async () => {
           packaging: true,
         },
       },
-      order: true,
+      order: {
+        include: {
+          customer: {
+            include: {
+              address: true
+            }
+          }
+        }
+      },
     },
   });
 
@@ -91,7 +115,15 @@ const updateDelivery = async (id: number, data: UpdatePartialDelivery) => {
           packaging: true,
         },
       },
-      order: true,
+      order: {
+        include: {
+          customer: {
+            include: {
+              address: true
+            }
+          }
+        }
+      },
     },
   });
 
