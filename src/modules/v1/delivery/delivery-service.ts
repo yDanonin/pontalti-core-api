@@ -35,10 +35,20 @@ const deleteDelivery = async (id: number) => {
   return handleDelivery((await repository.deleteDelivery(id)) as Delivery);
 };
 
+const getDeliveriesByDate = async (date: Date) => {
+  return await repository.getDeliveriesByDate(date);
+};
+
+const getDeliveriesByDateRange = async (startDate: Date, endDate: Date) => {
+  return await repository.getDeliveriesByDateRange(startDate, endDate);
+};
+
 export default {
   createDelivery,
   getDeliveryById,
   getAllDeliveries,
   updateDelivery,
-  deleteDelivery
+  deleteDelivery,
+  getDeliveriesByDate,
+  getDeliveriesByDateRange
 }; 
