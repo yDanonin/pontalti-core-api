@@ -261,6 +261,30 @@ async function main() {
 
       currentDate.setDate(currentDate.getDate() + 1);
     }
+
+    // Criando férias para cada funcionário
+    // Cada funcionário terá 1 ou 2 períodos de férias em 2024
+    const numVacations = Math.floor(Math.random() * 2) + 1;
+    
+    for (let i = 0; i < numVacations; i++) {
+      // Data de início aleatória entre janeiro e outubro de 2024
+      const startDate = new Date(2025, Math.floor(Math.random() * 10), Math.floor(Math.random() * 28) + 1);
+      // Duração de 20 a 30 dias
+      const duration = Math.floor(Math.random() * 11) + 20;
+      const endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + duration);
+
+      await dbClient.vacations.create({
+        data: {
+          employee_id: employee.id,
+          start_date: startDate,
+          end_date: endDate,
+          sold_days: Math.floor(Math.random() * 10), // 0 a 10 dias vendidos
+          created_at: new Date(),
+          updated_at: new Date()
+        }
+      });
+    }
   }
 
   // Criando configurações de horário

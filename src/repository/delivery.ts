@@ -3,6 +3,12 @@ import { DeliveryRegister, UpdatePartialDelivery, DeliveryStatus } from "../type
 
 const prisma = new PrismaClient();
 
+const normalizeDate = (date: Date): Date => {
+  const normalized = new Date(date);
+  normalized.setHours(0, 0, 0, 0);
+  return normalized;
+};
+
 const createDelivery = async (data: DeliveryRegister) => {
   const { packagings, ...deliveryData } = data;
 
@@ -144,10 +150,80 @@ const deleteDelivery = async (id: number) => {
   return delivery;
 };
 
+const getDeliveriesByDate = async (date: Date) => {
+  const startOfDay = new Date(date);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date(date);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const deliveries = await prisma.delivery.findMany({
+    where: {
+      delivery_date: {
+        gte: startOfDay,
+        lte: endOfDay
+      }
+    },
+    include: {
+      packagings: {
+        include: {
+          packaging: true,
+        },
+      },
+      order: {
+        include: {
+          customer: {
+            include: {
+              address: true
+            }
+          }
+        }
+      },
+    },
+  });
+
+  return deliveries;
+};
+
+const getDeliveriesByDateRange = async (startDate: Date, endDate: Date) => {
+  const normalizedStartDate = normalizeDate(startDate);
+  const normalizedEndDate = normalizeDate(endDate);
+  normalizedEndDate.setHours(23, 59, 59, 999);
+
+  const deliveries = await prisma.delivery.findMany({
+    where: {
+      delivery_date: {
+        gte: normalizedStartDate,
+        lte: normalizedEndDate
+      }
+    },
+    include: {
+      packagings: {
+        include: {
+          packaging: true,
+        },
+      },
+      order: {
+        include: {
+          customer: {
+            include: {
+              address: true
+            }
+          }
+        }
+      },
+    },
+  });
+
+  return deliveries;
+};
+
 export default {
   createDelivery,
   getDelivery,
   getAllDeliveries,
   updateDelivery,
-  deleteDelivery
+  deleteDelivery,
+  getDeliveriesByDate,
+  getDeliveriesByDateRange
 }; 

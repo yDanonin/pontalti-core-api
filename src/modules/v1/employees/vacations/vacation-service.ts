@@ -29,10 +29,21 @@ const deleteVacation = async (id: number) => {
   return await repository.deleteVacation(id)
 };
 
+const getVacationsByDateRange = async (startDate: Date, endDate: Date) => {
+  const filters: CommonRequest<Vacation> = {
+    page: 1,
+    perPage: 1000,
+    start_date: startDate,
+    end_date: endDate
+  };
+  return await repository.getVacations(filters);
+};
+
 export default {
   createVacation,
   getVacationById,
   getAllVacations,
   updatePartialVacation,
-  deleteVacation
+  deleteVacation,
+  getVacationsByDateRange
 };
