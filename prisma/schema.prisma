@@ -117,6 +117,7 @@ model Products {
   materialOrders MaterialOrders[]
   orders         OrderItems[]
   prices         Prices[]
+  stock          Stock[]
 }
 
 model Machines {
@@ -442,4 +443,12 @@ model DeliveryPackaging {
   packaging  Packaging @relation(fields: [packaging_id], references: [id])
 
   @@unique([delivery_id, packaging_id])
+}
+
+
+model Stock {
+  id Int @id @default(autoincrement())
+  product_id Int
+
+  product Products @relation(fields: [product_id], references: [id])
 }
