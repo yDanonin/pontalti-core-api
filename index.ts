@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response, request, response } from 'exp
 import ErrorHandler from './src/middlewares/error-handler';
 import versionRoutes from "@pontalti/modules/v1/routes"
 import AuthenticationHandler from './src/middlewares/authentication-handler';
+import { startSalesForecastCron } from "./src/tasks/cron-sales-forecast";
 
 const app = express();
 app.use(express.json())
@@ -30,5 +31,6 @@ app.use(ErrorHandler);
 const port = 3001;
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
+  startSalesForecastCron();
 });
 

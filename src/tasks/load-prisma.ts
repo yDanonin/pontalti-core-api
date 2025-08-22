@@ -405,6 +405,48 @@ async function main() {
     }
   }
 
+  // Criando previsões de venda (SalesForecasts) - 3 registros mock
+  const statusList = [1, 2, 3, 4]; // 1: Pendente, 2: Aceito, 3: Rejeitado, 4: Ordenado
+  const reasons = [
+    "média móvel 3 pedidos",
+    "pedido recorrente (30 dias)",
+    "sazonalidade (fim de ano)"
+  ];
+
+  for (let i = 0; i < 3; i++) {
+    const customer = getRandomElement(customers);
+    const product = getRandomElement(products);
+    const freq = [15, 30, 45][i % 3];
+    const nextDate = new Date();
+    nextDate.setDate(nextDate.getDate() + freq);
+
+    await dbClient.salesForecasts.create({
+      data: {
+        customer: { connect: { id: customer.id } },
+        product: { connect: { id: product.id } },
+        status: statusList[i],
+        reason: reasons[i],
+        next_estimated_date: nextDate,
+        frequency_days: freq,
+        quantity: Math.round(getRandomNumber(10, 250)),
+        created_by: "seed",
+        updated_by: "seed",
+      }
+    });
+  }
+
+  // Criando impressões de etiqueta (LabelPrints) - 3 registros mock
+  const someOrders = await dbClient.orders.findMany({ take: 3, orderBy: { id: 'desc' }});
+  for (const ord of someOrders) {
+    await dbClient.labelPrints.create({
+      data: {
+        order: { connect: { id: ord.id } },
+        created_by: 'seed',
+        updated_by: 'seed'
+      }
+    });
+  }
+
   // Criando configurações de mensagem para clientes
   const customersForMessages = await dbClient.customers.findMany({ take: 5 });
   
