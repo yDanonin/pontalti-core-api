@@ -19,9 +19,12 @@ import invoices from "@pontalti/modules/v1/invoices/routes";
 import packaging from "@pontalti/modules/v1/packaging/routes";
 import customerPackaging from "@pontalti/modules/v1/customer-packaging/routes";
 import delivery from "@pontalti/modules/v1/delivery/routes";
+import deliveryPackaging from "@pontalti/modules/v1/delivery-packaging/routes";
 import calendar from "@pontalti/modules/v1/calendar/routes";
 import stocks from '@pontalti/modules/v1/stocks/routes'
 import productionControl from '@pontalti/modules/v1/production-control/routes'
+import salesForecasts from '@pontalti/modules/v1/sales-forecasts/routes'
+import labelPrints from '@pontalti/modules/v1/label-prints/routes'
 
 const routes = Router();
 
@@ -48,8 +51,11 @@ routes.use('/invoices', invoices);
 routes.use('/packaging', packaging);
 routes.use('/customer-packaging', customerPackaging);
 routes.use('/delivery', delivery);
+routes.use('/delivery-packaging', deliveryPackaging);
 routes.use('/stocks', stocks);
 routes.use('/production-control', productionControl);
+routes.use('/sales-forecasts', salesForecasts);
+routes.use('/label-prints', labelPrints);
 routes.use("/calendar", calendar);
 
 export default routes;

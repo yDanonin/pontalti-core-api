@@ -23,7 +23,7 @@ router.get("/:id", async (req, res) => {
   res.json(result);
 });
 
-router.put("/:id", validate(updateCustomerPackagingSchema), async (req, res) => {
+router.patch("/:id", validate(updateCustomerPackagingSchema), async (req, res) => {
   const result = await customerPackagingService.updateCustomerPackaging(Number(req.params.id), req.body);
   res.json(result);
 });

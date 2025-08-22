@@ -111,12 +111,9 @@ export const getCustomerPackagingByPackaging = async (packaging_id: number): Pro
   });
 };
 
-export const getCustomerPackagingsByPontaltiBrand = async (pontalti_brand: boolean) => {
+export const getCustomerPackagingsByPontaltiBrand = async (pontalti_brand: boolean): Promise<CustomerPackagingWithRelations[]> => {
   return await dbClient.customerPackaging.findMany({
     where: { pontalti_brand },
-    include: {
-      customer: true,
-      packaging: true
-    }
+    select: defaultSelectedFieldsForCustomerPackaging
   });
 }; 

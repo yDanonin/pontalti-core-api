@@ -55,8 +55,9 @@ model Customers {
   Order  Orders[]
   prices Prices[]
 
-  messageConfig CustomerMessageConfig[]
-  packagings    CustomerPackaging[]
+  messageConfig  CustomerMessageConfig[]
+  packagings     CustomerPackaging[]
+  salesForecasts SalesForecasts[]
 }
 
 model Employees {
@@ -118,6 +119,7 @@ model Products {
   orders         OrderItems[]
   prices         Prices[]
   stock          Stock[]
+  salesForecasts SalesForecasts[]
 }
 
 model Machines {
@@ -198,12 +200,13 @@ model Orders {
 
   customer Customers @relation(fields: [customer_id], references: [id])
 
-  payments       Payments[]
-  productReturns ProductReturns[]
-  products       OrderItems[]
-  invoice        Invoice?
-  deliveries     Delivery[]
+  payments          Payments[]
+  productReturns    ProductReturns[]
+  products          OrderItems[]
+  invoice           Invoice?
+  deliveries        Delivery[]
   productionControl ProductionControl[]
+  labelPrints       LabelPrints[]
 }
 
 model OrderItems {
@@ -402,10 +405,11 @@ model Packaging {
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt
 
-  customers CustomerPackaging[]
+  customers  CustomerPackaging[]
   deliveries DeliveryPackaging[]
 }
 
+//TODO: Don't forget to implement this functionality in the frontend
 model CustomerPackaging {
   id             Int      @id @default(autoincrement())
   customer_id    Int
@@ -421,17 +425,18 @@ model CustomerPackaging {
 }
 
 model Delivery {
-  id          Int      @id @default(autoincrement())
-  order_id    Int
-  status      Int      // 1: Em planejamento, 2: Em rota, 3: Entregue
+  id            Int      @id @default(autoincrement())
+  order_id      Int
+  status        Int // 1: Em planejamento, 2: Em rota, 3: Entregue
   delivery_date DateTime
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 
-  order      Orders    @relation(fields: [order_id], references: [id])
+  order      Orders              @relation(fields: [order_id], references: [id])
   packagings DeliveryPackaging[]
 }
 
+//TODO: Don't forget to implement this functionality in the frontend
 model DeliveryPackaging {
   id           Int      @id @default(autoincrement())
   delivery_id  Int
@@ -440,16 +445,16 @@ model DeliveryPackaging {
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
 
-  delivery   Delivery  @relation(fields: [delivery_id], references: [id])
-  packaging  Packaging @relation(fields: [packaging_id], references: [id])
+  delivery  Delivery  @relation(fields: [delivery_id], references: [id])
+  packaging Packaging @relation(fields: [packaging_id], references: [id])
 
   @@unique([delivery_id, packaging_id])
 }
 
 model Stock {
-  id Int @id @default(autoincrement())
-  amount Int
-  location String
+  id         Int      @id @default(autoincrement())
+  amount     Int
+  location   String
   product_id Int
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -458,12 +463,46 @@ model Stock {
 }
 
 model ProductionControl {
-  id Int @id @default(autoincrement())
-  order_id Int
-  status Int
+  id                     Int      @id @default(autoincrement())
+  order_id               Int
+  status                 Int
   material_disponibility Int
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
 
   order Orders @relation(fields: [order_id], references: [id])
+}
+
+model SalesForecasts {
+  id                  Int       @id @default(autoincrement())
+  customer_id         Int
+  product_id          Int
+  status              Int
+  reason              String?
+  next_estimated_date DateTime?
+  frequency_days      Int?
+  quantity            Int
+  created_at          DateTime  @default(now())
+  created_by          String?
+  updated_at          DateTime  @updatedAt
+  updated_by          String?
+
+  customer Customers @relation(fields: [customer_id], references: [id])
+  product  Products  @relation(fields: [product_id], references: [id])
+
+  @@index([customer_id])
+  @@index([product_id])
+}
+
+model LabelPrints {
+  id               Int      @id @default(autoincrement())
+  order_id         Int
+  created_at       DateTime @default(now())
+  created_by       String?
+  updated_at       DateTime @updatedAt
+  updated_by       String?
+
+  order Orders @relation(fields: [order_id], references: [id])
+
+  @@index([order_id])
 }
